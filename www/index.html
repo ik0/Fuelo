@@ -9,9 +9,9 @@
     
     <script src="js/jquery-1.9.1.min.js"></script>
 	<link href="css/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-	<link href="css/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+	<link href="css/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
 	<script src="css/bootstrap/js/bootstrap.min.js"></script>
-	<link rel="stylesheet" href="/css/fontawesome/css/font-awesome.min.css">
+	<link rel="stylesheet" href="css/fontawesome/css/font-awesome.min.css">
 	
  <script type="text/javascript" charset="utf-8">
 
@@ -24,9 +24,14 @@
     // Cordova is ready
     //
     function onDeviceReady() {
-        // Throw an error if no update is received every 3 seconds
-        var options = { timeout: 3000 };
+    	var avg_price = window.localStorage.getItem("avg_price");
+    	$('#avg_price').empty().append(avg_price);
+        // Throw an error if no update is received every 30 seconds
+        var options = { timeout: 30000 };
         watchID = navigator.geolocation.watchPosition(onSuccess, onError, options);
+        
+        // Refresh data
+        get_avg_price();
     }
 
     // onSuccess Geolocation
@@ -64,6 +69,23 @@
 			}); // End of ajax call 
 
 	}
+
+	function get_avg_price()
+	{
+		// Get near gasstations by ajax
+		$.ajax({
+			url: 'http://fuelo.net/api/get_avg_price',
+			type:'POST',
+			dataType: 'text',
+			data: { fuel_type:'lpg' },
+			success: function(data){
+				var obj = jQuery.parseJSON(data);
+					$('#avg_price').empty().append(obj.price);
+					window.localStorage.setItem("avg_price", obj.price);
+				} // End of success function of ajax form
+			}); // End of ajax call 
+
+	}
 </script>
     
 </head>
@@ -91,11 +113,11 @@
 		<div class="pull-left">
 			<div  class="muted">цената днес</div>
 			<div>
-				+0.01
+				<span id="diff"></span>+0.01
 			</div>
 		</div>
 		<div>
-			<h2>1,19 лв.</h2>
+			<h2><span id="avg_price"></span> лв.</h2>
 		</div>
 	</div>
 	

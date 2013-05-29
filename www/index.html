@@ -68,7 +68,7 @@
     
     function refresh_info()
     {
-    	$('#refresh').empty().append('<a href="#"><i  class="icon-refresh icon-spin"></i></a>');
+    	$('#refresh').empty().append('<a href="#"><i  class="icon-refresh icon-spin icon-large text-info"></i></a>');
     	get_avg_price();
     	get_diff_price();
     	navigator.geolocation.getCurrentPosition(onSuccess, onError);
@@ -175,12 +175,13 @@ function calcRoute() {
     
 </head>
 <body>
-    <div class="navbar ">
+    <div class="navbar navbar-fixed-top">
 		<div class="navbar-inner">
 			<ul class="nav">
-				<li><a class="brand" href="index.html">Fuelo</a></li>
+				<li><a class="brand" href="index.html" style="padding:8px 15px 10px 35px;"> <img src="img/logo-72x24.gif" alt="Fuelo"/></a></li>
 			</ul>
 			<ul class="nav pull-right">
+				<li class="divider-vertical"></li>
 				<li id="refresh" onclick="refresh_info();"><a href="#"><i class="icon-refresh icon-spin icon-large"></i></a></li>
 				<li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -197,8 +198,8 @@ function calcRoute() {
 		</div>
 	</div>
 	
-    <h3><span id="fuel">Пропан Бутан</span> <a href="settings.html" class="btn" title="Настройки"><i class="icon-cogs"></i></a></h3>
-	<div class="well well-small" align="center">
+    <h3 style="padding-top:40px;"><span id="fuel">Пропан Бутан</span> <a href="settings.html" class="btn" title="Настройки"><i class="icon-cogs"></i></a></h3>
+	<div class="well well-small" style="margin-left:5px;margin-right:5px;" align="center">
 		<div class="pull-left">
 			<div  class="muted">цената днес</div>
 			<div>
@@ -228,24 +229,10 @@ function calcRoute() {
 		</div>
 	  </div>
 	</div>
-	<hr />
-	<footer>
-		<p>
-			<span>Fuelo.net<sup>&copy;</sup> &nbsp; </span>
-			<span class="pull-right">
-			<a href="http://www.facebook.com/pages/Fuelo/449971681745097" title="fuelo във facebook"><i class="icon-facebook"></i></a> &nbsp; 
-			<a href="https://twitter.com/fuelonet" title="fuelo в twitter"><i class="icon-twitter"></i></a> &nbsp; 
-			<a href="https://plus.google.com/112235336291514482753" title="fuelo в google+"><i class="icon-google-plus"></i></a>
-			</span>
-		</p>
-	
-	</footer>
-	<p align="center">
-		<a href="https://foursquare.com/app/fuelo/DOUKPUPBIRKRZEW0XXJGNHBPEZHFUFLQDTHS3CDI0NN0RPF3"><img src="http://fuelo.net/img/foursquare-connect-white.png" alt="connect to foursquare" /></a>
-	</p>
+
     <script type="text/javascript" src="phonegap.js"></script>
     <script type="text/javascript" src="js/index.js"></script>
-    <script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCqlpdOpEJ0Zp2le2Q6XR_nzqFM5i16etU&sensor=true&language=bg"></script>
+    <script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCqlpdOpEJ0Zp2le2Q6XR_nzqFM5i16etU&sensor=false&language=bg"></script>
     <script type="text/javascript">
         app.initialize();
     </script>

@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="format-detection" content="telephone=no" />
     <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
-    <link rel="stylesheet" type="text/css" href="css/index.css" />
+<!--     <link rel="stylesheet" type="text/css" href="css/index.css" /> -->
     <title>Fuelo</title>
     
     <script src="js/jquery-1.9.1.min.js"></script>
@@ -21,13 +21,20 @@
 
     var watchID = null;
     var fuel_type;
+    var mylat;
+    var mylon;
+    var destlat;
+    var destlon;
 
     // Cordova is ready
     //
     function onDeviceReady() {
+    	
     	var avg_price = window.localStorage.getItem("avg_price");
     	$('#avg_price').empty().append(avg_price);
+    	
     	fuel_type = window.localStorage.getItem("fuel_type");
+    	
     	var fuel_name = window.localStorage.getItem("fuel_name");
     	$('#fuel').empty().append(fuel_name);
     	var diff_formatted = window.localStorage.getItem("diff_formatted");
@@ -43,6 +50,8 @@
     // onSuccess Geolocation
     //
     function onSuccess(position) {
+    	mylat = position.coords.latitude;
+    	mylon = position.coords.longitude;
 		nearest_gasstation(position.coords.latitude,position.coords.longitude);
     }
 
@@ -55,8 +64,12 @@
     
     function refresh_info()
     {
+    	$('#refresh').empty().append('<a href="#"><i  class="icon-refresh icon-spin"></i></a>');
     	get_avg_price();
     	get_diff_price();
+    	navigator.geolocation.getCurrentPosition(onSuccess, onError);
+    	
+    	
     }
     
 	function nearest_gasstation(latitude,longitude)
@@ -135,6 +148,8 @@ function initialize(latitude,longitude,brand)
 	  map: map,
 	  title: "Вие се намирате тук"
 	  });
+	  
+	  $('#refresh').empty().append('<a href="#"><i  class="icon-refresh icon-large"></i></a>');
 }
 
 function calcRoute() {
@@ -156,19 +171,24 @@ function calcRoute() {
     
 </head>
 <body>
-    <div class="navbar navbar-inverse">
+    <div class="navbar ">
 		<div class="navbar-inner">
-			
 			<ul class="nav">
 				<li><a class="brand" href="index.html">Fuelo</a></li>
-				<li class="divider"> </li>
-				<li><a href="gasstations.html"><img src="img/gas_station.png" alt="Бензиностанции" /> </a></li>
-				<li class="divider"> </li>
-				<li><a href="prices.html"><img src="img/coins.png" alt="Цени" /> </a></li>
-				<li class="divider"> </li>
 			</ul>
 			<ul class="nav pull-right">
-				<li><a href="settings.html"><img src="img/settings.png" alt="Настройки" /> </a></li>
+				<li id="refresh" onclick="refresh_info();"><a href="#"><i class="icon-refresh icon-spin icon-large"></i></a></li>
+				<li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+						  <i class="icon-reorder icon-large"></i> </a>
+                        <ul class="dropdown-menu">
+							<li><a href="gasstations.html"><img src="img/gas_station-black.png" alt="Бензиностанции" /> Бензиностанции</a></li>
+							<li><a href="prices.html">$ Цени</a></li>
+							<li><a href="settings.html"><i class="icon-wrench"></i> Настройки</a></li>
+							<li class="divider"></li>
+							<li><a href="#" onclick="navigator.app.exitApp()"><i class="icon-off"></i> Изход</a></li>
+                        </ul>
+                    </li>
 			</ul>
 		</div>
 	</div>
@@ -188,7 +208,22 @@ function calcRoute() {
 	
 	<p> </p>
 	<div id='nearest_gasstation'></div>
-	<div id="googleMap" style="width:100%;height:180px;text-align:center;"><h1><i class="icon-spinner icon-spin icon-large"></i></h1></div>
+	<div id="googleMap" style="width:100%;height:180px;text-align:center;"><h1><i class="icon-spinner icon-spin icon-large"></i></h1><h5>Търсене на местоположението</h5></div>
+	
+	<div class="accordion" id="accordion2">
+	  <div class="accordion-group">
+		<div class="accordion-heading">
+		  <a class="accordion-toggle btn" data-toggle="collapse" data-parent="#accordion2" onclick="calcRoute();" href="#collapseOne">
+			<span align="center">Маршрут до там</span>
+		  </a>
+		</div>
+		<div id="collapseOne" class="accordion-body collapse">
+		  <div class="accordion-inner">
+			<div id="directionsPanel"></div>
+		  </div>
+		</div>
+	  </div>
+	</div>
 	<hr />
 	<footer>
 		<p>

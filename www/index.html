@@ -20,27 +20,29 @@
     document.addEventListener("deviceready", onDeviceReady, false);
 
     var watchID = null;
+    var fuel_type;
 
     // Cordova is ready
     //
     function onDeviceReady() {
     	var avg_price = window.localStorage.getItem("avg_price");
     	$('#avg_price').empty().append(avg_price);
-        // Throw an error if no update is received every 30 seconds
-        var options = { timeout: 30000 };
-        watchID = navigator.geolocation.watchPosition(onSuccess, onError, options);
+    	fuel_type = window.localStorage.getItem("fuel_type");
+    	var fuel_name = window.localStorage.getItem("fuel_name");
+    	$('#fuel').empty().append(fuel_name);
+    	var diff_formatted = window.localStorage.getItem("diff_formatted");
+    	$('#diff').empty().append(diff_formatted);
+
+        navigator.geolocation.getCurrentPosition(onSuccess, onError);
         
         // Refresh data
-        get_avg_price();
+        refresh_info()
+        
     }
 
     // onSuccess Geolocation
     //
     function onSuccess(position) {
-        var element = document.getElementById('geolocation');
-        element.innerHTML = 'Latitude: '  + position.coords.latitude      + '<br />' +
-                            'Longitude: ' + position.coords.longitude     + '<br />' +
-                            '<hr />'      + element.innerHTML;
 		nearest_gasstation(position.coords.latitude,position.coords.longitude);
     }
 
@@ -51,14 +53,20 @@
               'message: ' + error.message + '\n');
     }
     
+    function refresh_info()
+    {
+    	get_avg_price();
+    	get_diff_price();
+    }
+    
 	function nearest_gasstation(latitude,longitude)
 	{
 		// Get near gasstations by ajax
 		$.ajax({
-			url: 'http://fuelo.net/m/ajax_get_recommended_gasstation',
+			url: 'http://fuelo.net/api/get_recommended_gasstation',
 			type:'POST',
 			dataType: 'text',
-			data: { lat:latitude,lon:longitude,fuel:'lpg' },
+			data: { lat:latitude,lon:longitude,fuel:fuel_type },
 			success: function(data){
 				var obj = jQuery.parseJSON(data);
 					$('#nearest_gasstation').empty().append(obj.text);
@@ -77,20 +85,78 @@
 			url: 'http://fuelo.net/api/get_avg_price',
 			type:'POST',
 			dataType: 'text',
-			data: { fuel_type:'lpg' },
+			data: { fuel:fuel_type },
 			success: function(data){
 				var obj = jQuery.parseJSON(data);
-					$('#avg_price').empty().append(obj.price);
-					window.localStorage.setItem("avg_price", obj.price);
+					$('#avg_price').empty().append(obj.avg_price);
+					window.localStorage.setItem("avg_price", obj.avg_price);
 				} // End of success function of ajax form
 			}); // End of ajax call 
-
 	}
+	
+	function get_diff_price()
+	{
+		// Get near gasstations by ajax
+		$.ajax({
+			url: 'http://fuelo.net/api/get_diff_price',
+			type:'POST',
+			dataType: 'text',
+			data: { fuel:fuel_type },
+			success: function(data){
+				var obj = jQuery.parseJSON(data);
+					$('#diff').empty().append(obj.diff_formatted);
+					window.localStorage.setItem("diff_formatted", obj.diff_formatted);
+					window.localStorage.setItem("diff", obj.diff);
+				} // End of success function of ajax form
+			}); // End of ajax call 
+	}
+
+function initialize(latitude,longitude,brand)
+{
+	directionsDisplay = new google.maps.DirectionsRenderer();
+	var mapProp = {
+	  center:new google.maps.LatLng(latitude,longitude),
+	  zoom:15,
+	  mapTypeId:google.maps.MapTypeId.ROADMAP
+	  };
+	map=new google.maps.Map(document.getElementById("googleMap"),mapProp);
+	directionsDisplay.setMap(map);
+	directionsDisplay.setPanel(document.getElementById("directionsPanel"));
+
+	var marker=new google.maps.Marker({
+	  position:new google.maps.LatLng(latitude,longitude),
+	  icon:'http://fuelo.net/img/logos/'+brand+'-small.png',
+	  map: map,
+	  title: "Gasstation"
+	  });
+	  
+  	var visitor=new google.maps.Marker({
+	  position:new google.maps.LatLng(mylat,mylon),
+	  map: map,
+	  title: "Вие се намирате тук"
+	  });
+}
+
+function calcRoute() {
+  var start = new google.maps.LatLng(window.mylat,window.mylon);
+  var end = new google.maps.LatLng(window.destlat,window.destlon);
+  var request = {
+    origin:start,
+    destination:end,
+    travelMode: google.maps.TravelMode.DRIVING
+  };
+  directionsService.route(request, function(result, status) {
+    if (status == google.maps.DirectionsStatus.OK) {
+      directionsDisplay.setDirections(result);
+    }
+  });
+}
+
 </script>
     
 </head>
 <body>
-    	<div class="navbar navbar-inverse">
+    <div class="navbar navbar-inverse">
 		<div class="navbar-inner">
 			
 			<ul class="nav">
@@ -102,18 +168,17 @@
 				<li class="divider"> </li>
 			</ul>
 			<ul class="nav pull-right">
-				<li><a href="#"><img src="img/settings.png" alt="Настройки" /> </a></li>
+				<li><a href="settings.html"><img src="img/settings.png" alt="Настройки" /> </a></li>
 			</ul>
 		</div>
 	</div>
 	
-    <p id="geolocation">Watching geolocation...</p>
-    <h3>Пропан Бутан</h3>
+    <h3><span id="fuel">Пропан Бутан</span> <a href="settings.html" class="btn" title="Настройки"><i class="icon-cogs"></i></a></h3>
 	<div class="well well-small" align="center">
 		<div class="pull-left">
 			<div  class="muted">цената днес</div>
 			<div>
-				<span id="diff"></span>+0.01
+				<span id="diff"></span>
 			</div>
 		</div>
 		<div>
@@ -123,9 +188,25 @@
 	
 	<p> </p>
 	<div id='nearest_gasstation'></div>
-
+	<div id="googleMap" style="width:100%;height:180px;text-align:center;"><h1><i class="icon-spinner icon-spin icon-large"></i></h1></div>
+	<hr />
+	<footer>
+		<p>
+			<span>Fuelo.net<sup>&copy;</sup> &nbsp; </span>
+			<span class="pull-right">
+			<a href="http://www.facebook.com/pages/Fuelo/449971681745097" title="fuelo във facebook"><i class="icon-facebook"></i></a> &nbsp; 
+			<a href="https://twitter.com/fuelonet" title="fuelo в twitter"><i class="icon-twitter"></i></a> &nbsp; 
+			<a href="https://plus.google.com/112235336291514482753" title="fuelo в google+"><i class="icon-google-plus"></i></a>
+			</span>
+		</p>
+	
+	</footer>
+	<p align="center">
+		<a href="https://foursquare.com/app/fuelo/DOUKPUPBIRKRZEW0XXJGNHBPEZHFUFLQDTHS3CDI0NN0RPF3"><img src="http://fuelo.net/img/foursquare-connect-white.png" alt="connect to foursquare" /></a>
+	</p>
     <script type="text/javascript" src="phonegap.js"></script>
     <script type="text/javascript" src="js/index.js"></script>
+    <script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCqlpdOpEJ0Zp2le2Q6XR_nzqFM5i16etU&sensor=true&language=bg"></script>
     <script type="text/javascript">
         app.initialize();
     </script>

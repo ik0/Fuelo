@@ -9,7 +9,7 @@
     
     <script src="js/jquery-1.9.1.min.js"></script>
 	<link href="css/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-	<link href="css/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
+<!--	<link href="css/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet"> -->
 	<script src="css/bootstrap/js/bootstrap.min.js"></script>
 	<link rel="stylesheet" href="css/fontawesome/css/font-awesome.min.css">
 	
@@ -19,16 +19,20 @@
     //
     document.addEventListener("deviceready", onDeviceReady, false);
 
-    var watchID = null;
-    var fuel_type;
-    var mylat;
-    var mylon;
-    var destlat;
-    var destlon;
+    var directionsDisplay;
+    var directionsService
+	var map;
+	var fuel_type;
+	var mylat;
+	var mylon;
+	var destlat;
+	var destlon;
 
     // Cordova is ready
     //
     function onDeviceReady() {
+
+    	directionsService = new google.maps.DirectionsService();
     	
     	var avg_price = window.localStorage.getItem("avg_price");
     	$('#avg_price').empty().append(avg_price);
@@ -153,8 +157,8 @@ function initialize(latitude,longitude,brand)
 }
 
 function calcRoute() {
-  var start = new google.maps.LatLng(window.mylat,window.mylon);
-  var end = new google.maps.LatLng(window.destlat,window.destlon);
+  var start = new google.maps.LatLng(mylat,mylon);
+  var end = new google.maps.LatLng(destlat,destlon);
   var request = {
     origin:start,
     destination:end,
@@ -163,7 +167,7 @@ function calcRoute() {
   directionsService.route(request, function(result, status) {
     if (status == google.maps.DirectionsStatus.OK) {
       directionsDisplay.setDirections(result);
-    }
+    } else { alert (status); } 
   });
 }
 

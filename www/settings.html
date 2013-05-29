@@ -24,9 +24,13 @@
     // Cordova is ready
     //
     function onDeviceReady() {
+    	var fuel_type = window.localStorage.getItem("fuel_type");
+    	$('#fuelselect').val(fuel_type);
+    
 		$('#fuelselect').on('change', function() {
 		  window.localStorage.setItem("fuel_type", $(this).val());
 		  window.localStorage.setItem("fuel_name", $('#fuelselect :selected').text());
+		  $('#result').empty().append('<i class="icon-ok"></i> Saved !');
 		});
 	
     }
@@ -65,7 +69,8 @@
 						<option value="lpg">Пропан Бутан</option>
 						<option value="methane">Метан</option>
 						<option value="electricity">Ток</option>
-					</select>
+					</select> &nbsp; 
+					<span id="result" class="help-inline badge badge-success"></span>
 				</div>
   			</div>
   		</div>

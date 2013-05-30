@@ -33,18 +33,25 @@
     function onDeviceReady() {
 
     	directionsService = new google.maps.DirectionsService();
+    	fuel_type = window.localStorage.getItem("fuel_type");
+    	var fuel_name = window.localStorage.getItem("fuel_name");
     	
+    	if (fuel_type == null) {
+			fuel_type = 'gasoline';
+			fuel_name = 'Бензин А95';
+			window.localStorage.setItem("fuel_type", "gasoline");
+			window.localStorage.setItem("fuel_name", "Бензин А95");
+		}
+
     	var avg_price = window.localStorage.getItem("avg_price");
     	$('#avg_price').empty().append(avg_price);
     	
-    	fuel_type = window.localStorage.getItem("fuel_type");
-    	
-    	var fuel_name = window.localStorage.getItem("fuel_name");
     	$('#fuel').empty().append(fuel_name);
     	var diff_formatted = window.localStorage.getItem("diff_formatted");
     	$('#diff').empty().append(diff_formatted);
 
-        navigator.geolocation.getCurrentPosition(onSuccess, onError);
+
+        navigator.geolocation.getCurrentPosition(onSuccess, onError, { timeout: 15000, enableHighAccuracy: true });
         
         // Refresh data
         refresh_info()
@@ -62,8 +69,7 @@
     // onError Callback receives a PositionError object
     //
     function onError(error) {
-        alert('code: '    + error.code    + '\n' +
-              'message: ' + error.message + '\n');
+        alert('Не може да открием Вашето местоположение\n' + 'Моля проверете настройките на телефона Ви\n' + error.message + '\n');
     }
     
     function refresh_info()
@@ -178,7 +184,7 @@ function calcRoute() {
     <div class="navbar navbar-fixed-top">
 		<div class="navbar-inner">
 			<ul class="nav">
-				<li><a class="brand" href="index.html" style="padding:8px 15px 10px 35px;"> <img src="img/logo-72x24.gif" alt="Fuelo"/></a></li>
+				<li><a class="brand" href="index.html" style="padding:8px 15px 10px 30px;"> <img src="img/logo-72x24.gif" alt="Fuelo"/></a></li>
 			</ul>
 			<ul class="nav pull-right">
 				<li class="divider-vertical"></li>
@@ -198,7 +204,7 @@ function calcRoute() {
 		</div>
 	</div>
 	
-    <h3 style="padding-top:40px;"><span id="fuel">Пропан Бутан</span> <a href="settings.html" class="btn" title="Настройки"><i class="icon-cogs"></i></a></h3>
+    <h3 style="padding-top:40px;"><span id="fuel"></span> <a href="settings.html" class="btn" title="Настройки"><i class="icon-cogs"></i></a></h3>
 	<div class="well well-small" style="margin-left:5px;margin-right:5px;" align="center">
 		<div class="pull-left">
 			<div  class="muted">цената днес</div>

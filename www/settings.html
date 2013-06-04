@@ -4,14 +4,17 @@
     <meta charset="utf-8" />
     <meta name="format-detection" content="telephone=no" />
     <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
-<!--    <link rel="stylesheet" type="text/css" href="css/index.css" /> -->
+<!--     <link rel="stylesheet" type="text/css" href="css/index.css" /> -->
     <title>Fuelo</title>
     
     <script src="js/jquery-1.9.1.min.js"></script>
 	<link href="css/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-<!-- 	<link href="css/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet"> -->
+<!--	<link href="css/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet"> -->
 	<script src="css/bootstrap/js/bootstrap.min.js"></script>
 	<link rel="stylesheet" href="css/fontawesome/css/font-awesome.min.css">
+	
+	<link rel="stylesheet" href="css/jquery.mobile-1.3.1.min.css">
+	<script src="js/jquery.mobile-1.3.1.min.js"></script>
 	
  <script type="text/javascript" charset="utf-8">
 
@@ -30,7 +33,7 @@
 		$('#fuelselect').on('change', function() {
 		  window.localStorage.setItem("fuel_type", $(this).val());
 		  window.localStorage.setItem("fuel_name", $('#fuelselect :selected').text());
-		  $('#result').empty().append('<i class="icon-ok"></i> Saved !');
+		  $('#result').empty().append('<h4><i class="icon-ok"></i> Запазено</h4>');
 		});
 	
     }
@@ -38,57 +41,54 @@
     
 </head>
 <body>
-    <div class="navbar navbar-fixed-top">
-		<div class="navbar-inner">
+<div data-role="page" id="settings">
+    <div data-theme="d" data-role="header" data-position="fixed">
+        <div class="navbar">
 			<ul class="nav">
 				<li><a class="brand" href="index.html" style="padding:8px 15px 10px 30px;"> <img src="img/logo-72x24.gif" alt="Fuelo"/></a></li>
 			</ul>
-			<ul class="nav pull-right">
-				<li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-						  <i class="icon-reorder icon-large"></i> </a>
-                        <ul class="dropdown-menu">
-							<li><a href="gasstations.html"><img src="img/gas_station-black.png" alt="Бензиностанции" /> Бензиностанции</a></li>
-							<li><a href="prices.html">$ Цени</a></li>
-							<li><a href="settings.html"><i class="icon-wrench"></i> Настройки</a></li>
-							<li class="divider"></li>
-							<li><a href="#" onclick="navigator.app.exitApp()"><i class="icon-off"></i> Изход</a></li>
-                        </ul>
-                    </li>
-			</ul>
 		</div>
-	</div>
+    </div>
+    
+    <div data-role="content">
 	
 		<strong>Горивото, което зареждате.</strong>
-		<div class="control-group">
-			<div class="controls">
-	  			<div class="input-prepend">
-					<select id="fuelselect" name="fuel" class="input-medium">
-						<option value="gasoline">Бензин</option>
-						<option value="diesel">Дизел</option>
-						<option value="lpg">Пропан Бутан</option>
-						<option value="methane">Метан</option>
-						<option value="electricity">Ток</option>
-					</select> &nbsp; 
-					<span id="result" class="help-inline badge badge-success"></span>
-				</div>
-  			</div>
+		<div data-role="fieldcontain">
+			<select id="fuelselect" name="fuel" data-mini="true">
+				<option value="gasoline">Бензин</option>
+				<option value="diesel">Дизел</option>
+				<option value="lpg">Пропан Бутан</option>
+				<option value="methane">Метан</option>
+				<option value="electricity">Ток</option>
+			</select>
   		</div>
-	<hr />
-	<footer>
-		<p>
-			<span>Fuelo.net<sup>&copy;</sup> &nbsp; </span>
-			<span class="pull-right">
-			<a href="http://www.facebook.com/pages/Fuelo/449971681745097" title="fuelo във facebook"><i class="icon-facebook"></i></a> &nbsp; 
-			<a href="https://twitter.com/fuelonet" title="fuelo в twitter"><i class="icon-twitter"></i></a> &nbsp; 
-			<a href="https://plus.google.com/112235336291514482753" title="fuelo в google+"><i class="icon-google-plus"></i></a>
-			</span>
-		</p>
-	
-	</footer>
-	<p align="center">
-		<a href="https://foursquare.com/app/fuelo/DOUKPUPBIRKRZEW0XXJGNHBPEZHFUFLQDTHS3CDI0NN0RPF3"><img src="http://fuelo.net/img/foursquare-connect-white.png" alt="connect to foursquare" /></a>
-	</p>
+  		<div id="result"></div>
+    </div>
+    <div data-theme="d" data-role="footer" data-position="fixed">
+		<div data-role="navbar">
+            <ul>
+                <li>
+                    <a href="index.html" data-transition="fade" data-theme="">
+                        <i class="icon-location-arrow icon-large"></i>
+                        <br /><small>Начало</small>
+                    </a>
+                </li>
+                <li>
+                    <a href="gasstations.html" data-transition="fade" data-theme="">
+                    	<i class="icon-fire icon-large"></i>
+                        <br /><small>Бензиностанции</small>
+                    </a>
+                </li>
+                <li>
+                    <a href="settings.html" data-transition="fade" data-theme="">
+                    	<i class="icon-money icon-large"></i>
+                        <br /><small>Цени</small>
+                    </a>
+                </li>
+            </ul>
+        </div>
+   </div>
+</div>
     <script type="text/javascript" src="phonegap.js"></script>
     <script type="text/javascript" src="js/index.js"></script>
     <script type="text/javascript">

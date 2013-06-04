@@ -12,9 +12,9 @@
 <!--	<link href="css/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet"> -->
 	<script src="css/bootstrap/js/bootstrap.min.js"></script>
 	<link rel="stylesheet" href="css/fontawesome/css/font-awesome.min.css">
-	
+		<script src="js/jquery.mobile-1.3.1.min.js"></script>
 	<link rel="stylesheet" href="css/jquery.mobile-1.3.1.min.css">
-	<script src="js/jquery.mobile-1.3.1.min.js"></script>
+
 
  <script type="text/javascript" charset="utf-8">
 
@@ -54,7 +54,7 @@
     	$('#diff').empty().append(diff_formatted);
 
 
-        navigator.geolocation.getCurrentPosition(onSuccess, onError, { timeout: 15000, enableHighAccuracy: true });
+        navigator.geolocation.getCurrentPosition(onSuccess, onError, { maximumAge: 30000, timeout: 15000, enableHighAccuracy: true });
         
         // Refresh data
         refresh_info()
@@ -175,7 +175,8 @@ function calcRoute() {
   };
   directionsService.route(request, function(result, status) {
     if (status == google.maps.DirectionsStatus.OK) {
-      directionsDisplay.setDirections(result);
+    	$('#directionsPanel').empty()
+      	directionsDisplay.setDirections(result);
     } else { alert (status); } 
   });
 }
@@ -185,88 +186,294 @@ function calcRoute() {
 </head>
 <body>
 	
-	<div data-role="page" id="page1">
+<div data-role="page" id="index">
     <div data-theme="d" data-role="header" data-position="fixed">
         <div class="navbar">
-
 			<ul class="nav">
 				<li><a class="brand" href="index.html" style="padding:8px 15px 10px 30px;"> <img src="img/logo-72x24.gif" alt="Fuelo"/></a></li>
 			</ul>
 			<ul class="nav pull-right">
 				<li class="divider-vertical"></li>
 				<li id="refresh" onclick="refresh_info();"><a href="#"><i class="icon-refresh icon-spin icon-large"></i></a></li>
+				<li class="divider-vertical"></li>
 				<li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-						  <i class="icon-reorder icon-large"></i> </a>
-                        <ul class="dropdown-menu">
-							<li><a href="gasstations.html"><img src="img/gas_station-black.png" alt="Бензиностанции" /> Бензиностанции</a></li>
-							<li><a href="prices.html">$ Цени</a></li>
-							<li><a href="settings.html"><i class="icon-wrench"></i> Настройки</a></li>
-							<li class="divider"></li>
-							<li><a href="#" onclick="navigator.app.exitApp()"><i class="icon-off"></i> Изход</a></li>
-                        </ul>
-                    </li>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+					  <i class="icon-reorder icon-large"></i> </a>
+                    <ul class="dropdown-menu">
+						<li><a href="gasstations.html"><img src="img/gas_station-black.png" alt="Бензиностанции" /> Бензиностанции</a></li>
+						<li><a href="prices.html">$ Цени</a></li>
+						<li><a href="#settings" data-transition="slide"><i class="icon-wrench"></i> Настройки</a></li>
+						<li class="divider"></li>
+						<li><a href="#" onclick="navigator.app.exitApp()"><i class="icon-off"></i> Изход</a></li>
+                    </ul>
+                </li>
 			</ul>
-
-	</div>
-
+		</div>
     </div>
+    
     <div data-role="content">
 
-
-    <h3><span id="fuel"></span> <a href="settings.html" class="btn" title="Настройки"><i class="icon-cogs"></i></a></h3>
-	<div class="well well-small" style="margin-left:5px;margin-right:5px;" align="center">
-		<div class="pull-left">
-			<div  class="muted">цената днес</div>
+		<h3><span id="fuel"></span> <a href="settings.html" class="btn" title="Настройки"><i class="icon-cogs"></i></a></h3>
+		<div class="well well-small" style="margin-left:5px;margin-right:5px;" align="center">
+			<div class="pull-left">
+				<div  class="muted">цената днес</div>
+				<div>
+					<span id="diff"></span>
+				</div>
+			</div>
 			<div>
-				<span id="diff"></span>
+				<h2><span id="avg_price"></span> лв.</h2>
 			</div>
 		</div>
-		<div>
-			<h2><span id="avg_price"></span> лв.</h2>
-		</div>
-	</div>
 	
-	<p> </p>
-	<div id='nearest_gasstation'></div>
-	<div id="googleMap" style="width:100%;height:180px;text-align:center;"><h5><i class="icon-spinner icon-spin icon-large"></i> Търсене на местоположението</h5></div>
+		<p> </p>
+		<div id='nearest_gasstation'></div>
+		<div id="googleMap" style="width:100%;height:180px;text-align:center;"><h5><i class="icon-spinner icon-spin icon-large"></i> Търсене на местоположението</h5></div>
 	
-	<div data-role="collapsible-set">
-		<div data-role="collapsible" data-collapsed="true">
-			<h3 onclick="calcRoute();">
-				Маршрут до там
-			</h3>
-			<div id="directionsPanel"></div>
+		<div data-role="collapsible-set">
+			<div data-role="collapsible" data-collapsed="true">
+				<h3 onclick="calcRoute();">
+					Маршрут до там
+				</h3>
+				<div id="directionsPanel"></div>
+			</div>
 		</div>
-	</div>
 
     </div>
-    <div data-theme="d" data-role="footer" data-position="fixed">
+    <div data-theme="d" data-role="footer" data-position="fixed" data-id="bottomnav">
 		<div data-role="navbar">
             <ul>
                 <li>
-                    <a href="index.html" data-transition="fade" data-theme="">
-                        <i class="icon-location-arrow icon-2x"></i>
-                        <br />Начало
+                    <a href="#index" data-transition="fade" data-theme="d" class="ui-btn-active ui-state-persist">
+                        <i class="icon-location-arrow icon-large"></i>
+                        <br /><small>Начало</small>
                     </a>
                 </li>
                 <li>
-                    <a href="#page1" data-transition="fade" data-theme="">
-                    	<i class="icon-fire icon-2x"></i>
-                        <br />Бензиностанции
+                    <a href="#gasstations" data-transition="slide" data-theme="d">
+                    	<i class="icon-fire icon-large"></i>
+                        <br /><small>Наблизо</small>
                     </a>
                 </li>
                 <li>
-                    <a href="#page1" data-transition="fade" data-theme="">
-                    	<i class="icon-money icon-2x"></i>
-                        <br />Цени
+                    <a href="#prices" data-transition="slide" data-theme="d">
+                    	<i class="icon-money icon-large"></i>
+                        <br /><small>Цени</small>
                     </a>
                 </li>
             </ul>
         </div>
    </div>
-</div>
-    <script type="text/javascript" src="phonegap.js"></script>
+</div>	<!-- end index -->
+
+
+<div data-role="page" id="gasstations">
+    <div data-theme="d" data-role="header" data-position="fixed">
+        <div class="navbar">
+			<ul class="nav">
+				<li><a class="brand" href="index.html" style="padding:8px 15px 10px 30px;"> <img src="img/logo-72x24.gif" alt="Fuelo"/></a></li>
+			</ul>
+			<ul class="nav pull-right">
+				<li class="divider-vertical"></li>
+				<li id="refresh1" onclick="refresh_info();"><a href="#"><i class="icon-refresh icon-spin icon-large"></i></a></li>
+				<li class="divider-vertical"></li>
+				<li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+					  <i class="icon-reorder icon-large"></i> </a>
+                    <ul class="dropdown-menu">
+						<li><a href="gasstations.html"><img src="img/gas_station-black.png" alt="Бензиностанции" /> Бензиностанции</a></li>
+						<li><a href="prices.html">$ Цени</a></li>
+						<li><a href="settings.html"><i class="icon-wrench"></i> Настройки</a></li>
+						<li class="divider"></li>
+						<li><a href="#" onclick="navigator.app.exitApp()"><i class="icon-off"></i> Изход</a></li>
+                    </ul>
+                </li>
+			</ul>
+		</div>
+    </div>
+    
+    <div data-role="content">
+		<ul data-role="listview">
+			<li>
+				<a href="#">
+					<h3>Ruby Red</h3>
+					<p>Bold, bright and beautiful. This is one of our most popular
+					colors.</p>
+					<p class="ui-li-aside"><strong>$39.99</strong></p>
+				</a>
+			</li>
+			<li>
+				<a href="#">
+					<h3>Plush Purple</h3>
+					<p>Regal and luxurious, this makes any widget stand out from the
+					crowd.</p>
+					<p class="ui-li-aside"><strong>$49.99</strong></p>
+				</a>
+			</li>
+			<li>
+				<a href="#">
+					<h3>Cool Cream</h3>
+					<p>Smooth, refined, and easy on the eye, this color is always a best-
+					seller.</p>
+					<p class="ui-li-aside"><strong>$29.99</strong></p>
+				</a>
+			</li>
+		</ul>
+    </div>
+    
+    <div data-theme="d" data-role="footer" data-position="fixed" data-id="bottomnav">
+		<div data-role="navbar">
+            <ul>
+                <li>
+                    <a href="#index" data-transition="fade" data-theme="">
+                        <i class="icon-location-arrow icon-large"></i>
+                        <br /><small>Начало</small>
+                    </a>
+                </li>
+                <li>
+                    <a href="#gasstations" data-transition="fade" data-theme=""  class="ui-btn-active ui-state-persist">
+                    	<i class="icon-fire icon-large"></i>
+                        <br /><small>Наблизо</small>
+                    </a>
+                </li>
+                <li>
+                    <a href="#prices" data-transition="fade" data-theme="">
+                    	<i class="icon-money icon-large"></i>
+                        <br /><small>Цени</small>
+                    </a>
+                </li>
+            </ul>
+        </div>
+   </div>
+</div>	<!-- end gasstations -->
+
+
+
+<div data-role="page" id="prices">
+    <div data-theme="d" data-role="header" data-position="fixed">
+        <div class="navbar">
+			<ul class="nav">
+				<li><a class="brand" href="index.html" style="padding:8px 15px 10px 30px;"> <img src="img/logo-72x24.gif" alt="Fuelo"/></a></li>
+			</ul>
+			<ul class="nav pull-right">
+				<li class="divider-vertical"></li>
+				<li id="refresh2" onclick="refresh_info();"><a href="#"><i class="icon-refresh icon-spin icon-large"></i></a></li>
+				<li class="divider-vertical"></li>
+				<li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+					  <i class="icon-reorder icon-large"></i> </a>
+                    <ul class="dropdown-menu">
+						<li><a href="gasstations.html"><img src="img/gas_station-black.png" alt="Бензиностанции" /> Бензиностанции</a></li>
+						<li><a href="prices.html">$ Цени</a></li>
+						<li><a href="settings.html"><i class="icon-wrench"></i> Настройки</a></li>
+						<li class="divider"></li>
+						<li><a href="#" onclick="navigator.app.exitApp()"><i class="icon-off"></i> Изход</a></li>
+                    </ul>
+                </li>
+			</ul>
+		</div>
+    </div>
+    
+    <div data-role="content">
+
+        <div data-role="collapsible-set" data-theme="c" data-content-theme="c">
+            <div data-role="collapsible" data-collapsed="false">
+                <h4><span>Бензин А95</span><span class="pull-right"><span id="gasolineprice">2,56</span>лв.</span></h4>
+            </div>
+            <div data-role="collapsible" data-collapsed="false">
+                <h4><span>Дизел</span><span class="pull-right"><span id="dieselprice">2,61</span>лв.</span></h4>
+            </div>
+            <div data-role="collapsible" data-collapsed="false">
+                <h4><span>Автогаз</span><span class="pull-right"><span id="lpgprice">1,17</span>лв.</span></h4>
+            </div>
+            <div data-role="collapsible" data-collapsed="false">
+                <h4><span>Метан</span><span class="pull-right"><span id="methaneprice">1,75</span>лв.</span></h4>
+            </div>
+        </div>
+
+    </div>
+    
+    <div data-theme="d" data-role="footer" data-position="fixed" data-id="bottomnav">
+		<div data-role="navbar">
+            <ul>
+                <li>
+                    <a href="#index" data-transition="fade" data-theme="">
+                        <i class="icon-location-arrow icon-large"></i>
+                        <br /><small>Начало</small>
+                    </a>
+                </li>
+                <li>
+                    <a href="#gasstations" data-transition="fade" data-theme="">
+                    	<i class="icon-fire icon-large"></i>
+                        <br /><small>Наблизо</small>
+                    </a>
+                </li>
+                <li>
+                    <a href="#prices" data-transition="fade" data-theme="" class="ui-btn-active ui-state-persist">
+                    	<i class="icon-money icon-large"></i>
+                        <br /><small>Цени</small>
+                    </a>
+                </li>
+            </ul>
+        </div>
+   </div>
+</div>	<!-- end prices -->
+
+<div data-role="page" id="settings">
+    <div data-theme="d" data-role="header" data-position="fixed">
+        <div class="navbar">
+			<ul class="nav">
+				<li><a class="brand" href="#index" style="padding:8px 15px 10px 30px;"> <img src="img/logo-72x24.gif" alt="Fuelo"/></a></li>
+			</ul>
+		</div>
+    </div>
+    
+    <div data-role="content">
+    
+		<a href="#index" data-rel="back" data-role="button" data-inline="true" data-icon="arrow-l"> Назад</a>
+		<br />
+		<strong>Горивото, което зареждате.</strong>
+		<div data-role="fieldcontain">
+			<select id="fuelselect" name="fuel" data-mini="true">
+				<option value="gasoline">Бензин</option>
+				<option value="diesel">Дизел</option>
+				<option value="lpg">Пропан Бутан</option>
+				<option value="methane">Метан</option>
+				<option value="electricity">Ток</option>
+			</select>
+  		</div>
+  		<div id="result"></div>
+  		
+    </div>
+    
+    <div data-theme="d" data-role="footer" data-position="fixed" data-id="bottomnav">
+		<div data-role="navbar">
+            <ul>
+                <li>
+                    <a href="#index" data-transition="slide reverse" data-theme="">
+                        <i class="icon-location-arrow icon-large"></i>
+                        <br /><small>Начало</small>
+                    </a>
+                </li>
+                <li>
+                    <a href="#gasstations" data-transition="slide reverse" data-theme="">
+                    	<i class="icon-fire icon-large"></i>
+                        <br /><small>Бензиностанции</small>
+                    </a>
+                </li>
+                <li>
+                    <a href="#prices" data-transition="slide reverse" data-theme="">
+                    	<i class="icon-money icon-large"></i>
+                        <br /><small>Цени</small>
+                    </a>
+                </li>
+            </ul>
+        </div>
+   </div>
+</div>	<!-- end settings -->
+
+
+<!--    <script type="text/javascript" src="phonegap.js"></script> -->
     <script type="text/javascript" src="js/index.js"></script>
     <script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCqlpdOpEJ0Zp2le2Q6XR_nzqFM5i16etU&sensor=false&language=bg"></script>
     <script type="text/javascript">

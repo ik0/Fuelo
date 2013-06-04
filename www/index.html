@@ -25,7 +25,11 @@
     var directionsDisplay;
     var directionsService
 	var map;
-	var fuel_type;
+	var fuel_type = 'gasoline';
+	var fuel_name = 'Бензин А95';
+	var avg_price = '0,00';
+	var diff_formatted = '+0,00';
+	
 	var mylat;
 	var mylon;
 	var destlat;
@@ -37,7 +41,7 @@
 
     	directionsService = new google.maps.DirectionsService();
     	fuel_type = window.localStorage.getItem("fuel_type");
-    	var fuel_name = window.localStorage.getItem("fuel_name");
+    	fuel_name = window.localStorage.getItem("fuel_name");
     	
     	if (fuel_type == null) {
 			fuel_type = 'gasoline';
@@ -46,11 +50,11 @@
 			window.localStorage.setItem("fuel_name", "Бензин А95");
 		}
 
-    	var avg_price = window.localStorage.getItem("avg_price");
+    	avg_price = window.localStorage.getItem("avg_price");
     	$('#avg_price').empty().append(avg_price);
     	
     	$('#fuel').empty().append(fuel_name);
-    	var diff_formatted = window.localStorage.getItem("diff_formatted");
+    	diff_formatted = window.localStorage.getItem("diff_formatted");
     	$('#diff').empty().append(diff_formatted);
 
 
@@ -59,6 +63,22 @@
         // Refresh data
         refresh_info()
         
+        
+        // Fuelselect 
+        $("#fuelselect").val(fuel_type);
+
+		$('#fuelselect').on('change', function() {
+		  	fuel_type = this.value;
+		   	fuel_name = $("#fuelselect option:selected").text();;
+			window.localStorage.setItem("fuel_type", fuel_type);
+			window.localStorage.setItem("fuel_name", fuel_name);
+			get_avg_price();
+			get_diff_price();
+			$('#fuel').empty().append(fuel_name);
+			$.mobile.changePage('#saved', 'pop');
+			//$('#result').empty().append('<i class="icon-ok"></i>Saved');
+		});
+
     }
 
     // onSuccess Geolocation
@@ -78,11 +98,25 @@
     function refresh_info()
     {
     	$('#refresh').empty().append('<a href="#"><i  class="icon-refresh icon-spin icon-large"></i></a>');
+    	
+    	$('#avg_price').empty().append(avg_price);
+    	$('#fuel').empty().append(fuel_name);
+    	$('#diff').empty().append(diff_formatted);
+    	
+    	get_avg_price_gasoline();
+    	get_avg_price_diesel();
+    	get_avg_price_lpg();
+    	get_avg_price_methane();
+    	
     	get_avg_price();
     	get_diff_price();
     	navigator.geolocation.getCurrentPosition(onSuccess, onError);
-    	
-    	
+    }
+    
+    function refresh_gasstations()
+    {
+    	get_gasstattions();
+    	$('#gasstations_list').listview('refresh');
     }
     
 	function nearest_gasstation(latitude,longitude)
@@ -102,39 +136,6 @@
 				} // End of success function of ajax form
 			}); // End of ajax call 
 
-	}
-
-	function get_avg_price()
-	{
-		// Get near gasstations by ajax
-		$.ajax({
-			url: 'http://fuelo.net/api/get_avg_price',
-			type:'POST',
-			dataType: 'text',
-			data: { fuel:fuel_type },
-			success: function(data){
-				var obj = jQuery.parseJSON(data);
-					$('#avg_price').empty().append(obj.avg_price);
-					window.localStorage.setItem("avg_price", obj.avg_price);
-				} // End of success function of ajax form
-			}); // End of ajax call 
-	}
-	
-	function get_diff_price()
-	{
-		// Get near gasstations by ajax
-		$.ajax({
-			url: 'http://fuelo.net/api/get_diff_price',
-			type:'POST',
-			dataType: 'text',
-			data: { fuel:fuel_type },
-			success: function(data){
-				var obj = jQuery.parseJSON(data);
-					$('#diff').empty().append(obj.diff_formatted);
-					window.localStorage.setItem("diff_formatted", obj.diff_formatted);
-					window.localStorage.setItem("diff", obj.diff);
-				} // End of success function of ajax form
-			}); // End of ajax call 
 	}
 
 function initialize(latitude,longitude,brand)
@@ -180,40 +181,27 @@ function calcRoute() {
     } else { alert (status); } 
   });
 }
-
 </script>
     
 </head>
 <body>
 	
 <div data-role="page" id="index">
-    <div data-theme="d" data-role="header" data-position="fixed">
+    <div data-theme="d" data-role="header" data-position="fixed" data-id="topnav">
         <div class="navbar">
 			<ul class="nav">
 				<li><a class="brand" href="index.html" style="padding:8px 15px 10px 30px;"> <img src="img/logo-72x24.gif" alt="Fuelo"/></a></li>
 			</ul>
 			<ul class="nav pull-right">
-				<li class="divider-vertical"></li>
 				<li id="refresh" onclick="refresh_info();"><a href="#"><i class="icon-refresh icon-spin icon-large"></i></a></li>
-				<li class="divider-vertical"></li>
-				<li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-					  <i class="icon-reorder icon-large"></i> </a>
-                    <ul class="dropdown-menu">
-						<li><a href="gasstations.html"><img src="img/gas_station-black.png" alt="Бензиностанции" /> Бензиностанции</a></li>
-						<li><a href="prices.html">$ Цени</a></li>
-						<li><a href="#settings" data-transition="slide"><i class="icon-wrench"></i> Настройки</a></li>
-						<li class="divider"></li>
-						<li><a href="#" onclick="navigator.app.exitApp()"><i class="icon-off"></i> Изход</a></li>
-                    </ul>
-                </li>
+				<li><a href="#settings" data-transition="slide"><i class="icon-reorder icon-large"></i></a></li>
 			</ul>
 		</div>
     </div>
     
     <div data-role="content">
 
-		<h3><span id="fuel"></span> <a href="settings.html" class="btn" title="Настройки"><i class="icon-cogs"></i></a></h3>
+		<h3><span id="fuel"></span></h3>
 		<div class="well well-small" style="margin-left:5px;margin-right:5px;" align="center">
 			<div class="pull-left">
 				<div  class="muted">цената днес</div>
@@ -266,58 +254,23 @@ function calcRoute() {
    </div>
 </div>	<!-- end index -->
 
-
+<!-- gasstations -->
 <div data-role="page" id="gasstations">
-    <div data-theme="d" data-role="header" data-position="fixed">
+    <div data-theme="d" data-role="header" data-position="fixed" data-id="topnav">
         <div class="navbar">
 			<ul class="nav">
 				<li><a class="brand" href="index.html" style="padding:8px 15px 10px 30px;"> <img src="img/logo-72x24.gif" alt="Fuelo"/></a></li>
 			</ul>
 			<ul class="nav pull-right">
-				<li class="divider-vertical"></li>
-				<li id="refresh1" onclick="refresh_info();"><a href="#"><i class="icon-refresh icon-spin icon-large"></i></a></li>
-				<li class="divider-vertical"></li>
-				<li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-					  <i class="icon-reorder icon-large"></i> </a>
-                    <ul class="dropdown-menu">
-						<li><a href="gasstations.html"><img src="img/gas_station-black.png" alt="Бензиностанции" /> Бензиностанции</a></li>
-						<li><a href="prices.html">$ Цени</a></li>
-						<li><a href="settings.html"><i class="icon-wrench"></i> Настройки</a></li>
-						<li class="divider"></li>
-						<li><a href="#" onclick="navigator.app.exitApp()"><i class="icon-off"></i> Изход</a></li>
-                    </ul>
-                </li>
+				<li id="refresh_gasstations" onclick="refresh_gasstations();"><a href="#"><i class="icon-refresh icon-large"></i></a></li>
+				<li><a href="#settings" data-transition="slide"><i class="icon-reorder icon-large"></i></a></li>
 			</ul>
 		</div>
     </div>
     
     <div data-role="content">
-		<ul data-role="listview">
-			<li>
-				<a href="#">
-					<h3>Ruby Red</h3>
-					<p>Bold, bright and beautiful. This is one of our most popular
-					colors.</p>
-					<p class="ui-li-aside"><strong>$39.99</strong></p>
-				</a>
-			</li>
-			<li>
-				<a href="#">
-					<h3>Plush Purple</h3>
-					<p>Regal and luxurious, this makes any widget stand out from the
-					crowd.</p>
-					<p class="ui-li-aside"><strong>$49.99</strong></p>
-				</a>
-			</li>
-			<li>
-				<a href="#">
-					<h3>Cool Cream</h3>
-					<p>Smooth, refined, and easy on the eye, this color is always a best-
-					seller.</p>
-					<p class="ui-li-aside"><strong>$29.99</strong></p>
-				</a>
-			</li>
+		<ul data-role="listview" id="gasstations_list">
+
 		</ul>
     </div>
     
@@ -348,17 +301,15 @@ function calcRoute() {
 </div>	<!-- end gasstations -->
 
 
-
+<!-- prices -->
 <div data-role="page" id="prices">
-    <div data-theme="d" data-role="header" data-position="fixed">
+    <div data-theme="d" data-role="header" data-position="fixed" data-id="topnav">
         <div class="navbar">
 			<ul class="nav">
 				<li><a class="brand" href="index.html" style="padding:8px 15px 10px 30px;"> <img src="img/logo-72x24.gif" alt="Fuelo"/></a></li>
 			</ul>
 			<ul class="nav pull-right">
-				<li class="divider-vertical"></li>
-				<li id="refresh2" onclick="refresh_info();"><a href="#"><i class="icon-refresh icon-spin icon-large"></i></a></li>
-				<li class="divider-vertical"></li>
+				<li id="refresh_prices" onclick="refresh_prices();"><a href="#"><i class="icon-refresh icon-large"></i></a></li>
 				<li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
 					  <i class="icon-reorder icon-large"></i> </a>
@@ -375,19 +326,19 @@ function calcRoute() {
     </div>
     
     <div data-role="content">
-
+		<h2>Цените днес</h2>
         <div data-role="collapsible-set" data-theme="c" data-content-theme="c">
             <div data-role="collapsible" data-collapsed="false">
-                <h4><span>Бензин А95</span><span class="pull-right"><span id="gasolineprice">2,56</span>лв.</span></h4>
+                <h4><span>Бензин А95</span><span class="pull-right"><span id="gasolineprice"></span>лв.</span></h4>
             </div>
             <div data-role="collapsible" data-collapsed="false">
-                <h4><span>Дизел</span><span class="pull-right"><span id="dieselprice">2,61</span>лв.</span></h4>
+                <h4><span>Дизел</span><span class="pull-right"><span id="dieselprice"></span>лв.</span></h4>
             </div>
             <div data-role="collapsible" data-collapsed="false">
-                <h4><span>Автогаз</span><span class="pull-right"><span id="lpgprice">1,17</span>лв.</span></h4>
+                <h4><span>Автогаз</span><span class="pull-right"><span id="lpgprice"></span>лв.</span></h4>
             </div>
             <div data-role="collapsible" data-collapsed="false">
-                <h4><span>Метан</span><span class="pull-right"><span id="methaneprice">1,75</span>лв.</span></h4>
+                <h4><span>Метан</span><span class="pull-right"><span id="methaneprice"></span>лв.</span></h4>
             </div>
         </div>
 
@@ -419,8 +370,9 @@ function calcRoute() {
    </div>
 </div>	<!-- end prices -->
 
+<!-- settings -->
 <div data-role="page" id="settings">
-    <div data-theme="d" data-role="header" data-position="fixed">
+    <div data-theme="d" data-role="header" data-position="fixed" data-id="topnav">
         <div class="navbar">
 			<ul class="nav">
 				<li><a class="brand" href="#index" style="padding:8px 15px 10px 30px;"> <img src="img/logo-72x24.gif" alt="Fuelo"/></a></li>
@@ -429,13 +381,13 @@ function calcRoute() {
     </div>
     
     <div data-role="content">
-    
-		<a href="#index" data-rel="back" data-role="button" data-inline="true" data-icon="arrow-l"> Назад</a>
+    	<h2>Настройки</h2>
+		<a href="#index" data-role="button" data-inline="true" data-transition="slide reverse" data-icon="arrow-l"> Назад</a>
 		<br />
 		<strong>Горивото, което зареждате.</strong>
 		<div data-role="fieldcontain">
 			<select id="fuelselect" name="fuel" data-mini="true">
-				<option value="gasoline">Бензин</option>
+				<option value="gasoline">Бензин А95</option>
 				<option value="diesel">Дизел</option>
 				<option value="lpg">Пропан Бутан</option>
 				<option value="methane">Метан</option>
@@ -472,10 +424,22 @@ function calcRoute() {
    </div>
 </div>	<!-- end settings -->
 
+<!-- saved popup -->
+<div data-role="dialog" id="saved">
+	<div data-role="header">
+		<h2>Запазено</h2>
+	</div>
+	<div data-role="content">
+		<p style="text-align: center;">Вашите настройки бяха записани.</a></p>
+		<p><a href="#settings" data-transition="slide reverse" data-role="button">OK</a></p>
+	</div>
+</div>	<!-- end saved popup -->
+
 
 <!--    <script type="text/javascript" src="phonegap.js"></script> -->
     <script type="text/javascript" src="js/index.js"></script>
     <script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCqlpdOpEJ0Zp2le2Q6XR_nzqFM5i16etU&sensor=false&language=bg"></script>
+    <script type="text/javascript" src="js/api.js"></script>
     <script type="text/javascript">
         app.initialize();
     </script>

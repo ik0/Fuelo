@@ -18,7 +18,8 @@
     // Cordova is ready
     //
     function onDeviceReady() {
-
+		navigator.splashscreen.hide();
+		
     	directionsService = new google.maps.DirectionsService();
     	fuel_type = window.localStorage.getItem("fuel_type");
     	fuel_name = window.localStorage.getItem("fuel_name");
@@ -37,10 +38,7 @@
     	diff_formatted = window.localStorage.getItem("diff_formatted");
     	$('#diff').empty().append(diff_formatted);
 
-        navigator.geolocation.getCurrentPosition(onSuccess, onError, { maximumAge: 30000, timeout: 15000, enableHighAccuracy: true });
-        
-        // Refresh data
-        refresh_info()
+        //navigator.geolocation.getCurrentPosition(onSuccess, onError, { maximumAge: 30000, timeout: 15000, enableHighAccuracy: true });
         
         // Fuelselect 
         $("#fuelselect").val(fuel_type);
@@ -69,7 +67,10 @@
 		$('#gasstations').on('pageshow',function(event, ui){
 			refresh_gasstations();
 		});
-
+        
+        // Refresh data
+        refresh_info()
+        
     }
 
     // onSuccess Geolocation

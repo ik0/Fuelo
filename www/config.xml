@@ -53,6 +53,8 @@
         A list of available plugins are available at https://build.phonegap.com/docs/plugins
     -->
     <plugin name="Geolocation" value="org.apache.cordova.GeoBroker" />
+    <plugin name="Storage" value="org.apache.cordova.Storage" />
+    <plugin name="SplashScreen" value="org.apache.cordova.SplashScreen"/>
 
     <!-- Define app icon for each platform. -->
     <icon src="icon.png" />

@@ -1,6 +1,38 @@
-    // Wait for Cordova to load
+// Wait for Cordova to load
     //
     document.addEventListener("deviceready", onDeviceReady, false);
+    
+var app = {
+    // Application Constructor
+    initialize: function() {
+        this.bindEvents();
+    },
+    // Bind Event Listeners
+    //
+    // Bind any events that are required on startup. Common events are:
+    // 'load', 'deviceready', 'offline', and 'online'.
+    bindEvents: function() {
+        document.addEventListener('deviceready', this.onDeviceReady, false);
+    },
+    // deviceready Event Handler
+    //
+    // The scope of 'this' is the event. In order to call the 'receivedEvent'
+    // function, we must explicity call 'app.receivedEvent(...);'
+    onDeviceReady: function() {
+        app.receivedEvent('deviceready');
+    },
+    // Update DOM on a Received Event
+    receivedEvent: function(id) {
+        var parentElement = document.getElementById(id);
+        var listeningElement = parentElement.querySelector('.listening');
+        var receivedElement = parentElement.querySelector('.received');
+
+        listeningElement.setAttribute('style', 'display:none;');
+        receivedElement.setAttribute('style', 'display:block;');
+
+        console.log('Received Event: ' + id);
+    }
+};
 
     var directionsDisplay;
     var directionsService
@@ -18,27 +50,10 @@
     // Cordova is ready
     //
     function onDeviceReady() {
-		navigator.splashscreen.hide();
-		
+
     	directionsService = new google.maps.DirectionsService();
-    	fuel_type = window.localStorage.getItem("fuel_type");
-    	fuel_name = window.localStorage.getItem("fuel_name");
-    	
-    	if (fuel_type == null) {
-			fuel_type = 'gasoline';
-			fuel_name = 'Бензин А95';
-			window.localStorage.setItem("fuel_type", "gasoline");
-			window.localStorage.setItem("fuel_name", "Бензин А95");
-		}
 
-    	avg_price = window.localStorage.getItem("avg_price");
-    	$('#avg_price').empty().append(avg_price);
-    	
-    	$('#fuel').empty().append(fuel_name);
-    	diff_formatted = window.localStorage.getItem("diff_formatted");
-    	$('#diff').empty().append(diff_formatted);
-
-        navigator.geolocation.getCurrentPosition(onSuccess, onError, { timeout: 15000 });
+        //navigator.geolocation.getCurrentPosition(onSuccess, onError, { maximumAge: 30000, timeout: 15000, enableHighAccuracy: true });
         
         // Fuelselect 
         $("#fuelselect").val(fuel_type);
@@ -90,6 +105,23 @@
     function refresh_info()
     {
     	$('#refresh').empty().append('<a href="#"><i  class="icon-refresh icon-spin icon-large"></i></a>');
+
+    	fuel_type = window.localStorage.getItem("fuel_type");
+    	fuel_name = window.localStorage.getItem("fuel_name");
+    	
+    	if (fuel_type == null) {
+			fuel_type = 'gasoline';
+			fuel_name = 'Бензин А95';
+			window.localStorage.setItem("fuel_type", "gasoline");
+			window.localStorage.setItem("fuel_name", "Бензин А95");
+		}
+
+    	avg_price = window.localStorage.getItem("avg_price");
+    	$('#avg_price').empty().append(avg_price);
+    	
+    	$('#fuel').empty().append(fuel_name);
+    	diff_formatted = window.localStorage.getItem("diff_formatted");
+    	$('#diff').empty().append(diff_formatted);
     	
     	$('#avg_price').empty().append(avg_price);
     	$('#fuel').empty().append(fuel_name);
@@ -97,7 +129,7 @@
  
     	get_avg_price();
     	get_diff_price();
-    	navigator.geolocation.getCurrentPosition(onSuccess, onError, { timeout: 15000);
+    	navigator.geolocation.getCurrentPosition(onSuccess, onError, { maximumAge: 30000, timeout: 15000, enableHighAccuracy: true });
     }
     
     function refresh_gasstations()

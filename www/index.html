@@ -15,9 +15,13 @@
 	
 	<script src="js/jquery.mobile-1.3.1.min.js"></script>
 	<link rel="stylesheet" href="css/jquery.mobile-1.3.1.min.css">
+    <!-- <script type="text/javascript" src="js/index.js"></script>	 -->
+	<script type="text/javascript" src="js/api.js"></script>
 
-   <script type="text/javascript" src="js/api.js"></script>
-
+    <script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCqlpdOpEJ0Zp2le2Q6XR_nzqFM5i16etU&sensor=false&language=bg"></script>
+    <script type="text/javascript">
+        app.initialize();
+    </script>
 </head>
 <body>
 	
@@ -199,6 +203,21 @@
 
 <!-- settings -->
 <div data-role="page" id="settings">
+	<script type="text/javascript">
+        $("#fuelselect").val(fuel_type);
+
+		$('#fuelselect').on('change', function() {
+		  	fuel_type = this.value;
+		   	fuel_name = $("#fuelselect option:selected").text();;
+			window.localStorage.setItem("fuel_type", fuel_type);
+			window.localStorage.setItem("fuel_name", fuel_name);
+			get_avg_price();
+			get_diff_price();
+			$('#fuel').empty().append(fuel_name);
+			$.mobile.changePage('#saved', 'pop');
+			//$('#result').empty().append('<i class="icon-ok"></i>Saved');
+		});
+	</script>
     <div data-theme="d" data-role="header" data-position="fixed" data-id="topnav">
         <div class="navbar">
 			<ul class="nav">
@@ -264,12 +283,7 @@
 
 
 <!--    <script type="text/javascript" src="phonegap.js"></script> -->
-    <script type="text/javascript" src="js/index.js"></script>
-    <script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCqlpdOpEJ0Zp2le2Q6XR_nzqFM5i16etU&sensor=false&language=bg"></script>
-    
-    <script type="text/javascript">
-        app.initialize();
-    </script>
+
 
 </body>
 </html>

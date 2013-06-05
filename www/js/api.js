@@ -37,6 +37,7 @@ var app = {
     var directionsDisplay;
     var directionsService
 	var map;
+	var mapgastations;
 	var fuel_type = 'gasoline';
 	var fuel_name = 'Бензин А95';
 	var avg_price = '0,00';
@@ -322,6 +323,7 @@ function calcRoute() {
 
 	function get_gasstattions()
 	{
+		initialize_gasstations_map();
 		// Get near gasstations by ajax
 		$.ajax({
 			url: 'http://fuelo.net/api/get_recommended_gasstations',
@@ -333,6 +335,16 @@ function calcRoute() {
 					$('#gasstations_list').empty().append(obj.list);
 					$('#gasstations_list').listview('refresh');
 					$('#refreshgasstations').empty().append('<a href="#"><i  class="icon-refresh icon-large"></i></a>');
+					ob = jQuery.parseJSON(obj.coords);
+					//alert (ob);
+					//len = ob.length;
+					//alert (len);
+					for (var i = 0; i < ob.length; i++) {
+						var a = ob[i];
+						//alert(a.lat);
+						addMarker(a.lat,a.lon,a.logo) 
+					}
+
 				} // End of success function of ajax form
 			}); // End of ajax call 
 	}
@@ -454,31 +466,56 @@ function calcRoute() {
 	  
     }
 
-function initialize_gasstation_map(latitude,longitude,brand)
+	function initialize_gasstation_map(latitude,longitude,brand)
+	{
+		var mapProp = {
+		  center:new google.maps.LatLng(latitude,longitude),
+		  zoom:15,
+		  mapTypeId:google.maps.MapTypeId.ROADMAP
+		  };
+		var mapgastation =new google.maps.Map(document.getElementById("googleMapGasstation"),mapProp);
+
+		var marker=new google.maps.Marker({
+		  position:new google.maps.LatLng(latitude,longitude),
+		  icon:'http://fuelo.net/img/logos/'+brand+'-small.png',
+		  map: mapgastation,
+		  title: "Gasstation"
+		  });
+		  
+	  	var visitor=new google.maps.Marker({
+		  position:new google.maps.LatLng(mylat,mylon),
+		  map: mapgastation,
+		  title: "Вие се намирате тук"
+		  });
+		  
+		  $('#refresh_gasstation').empty().append('<a href="#"><i class="icon-refresh icon-large"></i></a>');
+	}
+
+// Function for adding a marker to the page.
+    function addMarker(lat,lon,logo)
+    {
+        marker = new google.maps.Marker({
+            position: new google.maps.LatLng(lat, lon),
+            icon:'http://fuelo.net/img/logos/'+logo+'-small.png',
+            map: mapgasstations
+        });
+    }
+
+function initialize_gasstations_map()
 {
-	directionsDisplay = new google.maps.DirectionsRenderer();
 	var mapProp = {
-	  center:new google.maps.LatLng(latitude,longitude),
-	  zoom:15,
-	  disableDefaultUI: true,
+	  center:new google.maps.LatLng(mylat,mylon),
+	  zoom:12,
 	  mapTypeId:google.maps.MapTypeId.ROADMAP
 	  };
-	map=new google.maps.Map(document.getElementById("googleMapGasstation"),mapProp);
-	directionsDisplay.setMap(map);
-	directionsDisplay.setPanel(document.getElementById("directionsPanel"));
-
-	var marker=new google.maps.Marker({
-	  position:new google.maps.LatLng(latitude,longitude),
-	  icon:'http://fuelo.net/img/logos/'+brand+'-small.png',
-	  map: map,
-	  title: "Gasstation"
-	  });
+	  
+	mapgasstations = new google.maps.Map(document.getElementById("googleMapGasstations"),mapProp);
 	  
   	var visitor=new google.maps.Marker({
 	  position:new google.maps.LatLng(mylat,mylon),
-	  map: map,
+	  map: mapgasstations,
 	  title: "Вие се намирате тук"
 	  });
 	  
-	  $('#refresh_gasstation').empty().append('<a href="#"><i class="icon-refresh icon-large"></i></a>');
+	  $('#refresh_gasstations').empty().append('<a href="#"><i class="icon-refresh icon-large"></i></a>');
 }

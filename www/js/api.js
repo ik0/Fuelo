@@ -50,6 +50,7 @@ var app = {
     // Cordova is ready
     //
     function onDeviceReady() {
+    	alert('Device ready');
 
     	directionsService = new google.maps.DirectionsService();
 
@@ -93,6 +94,8 @@ var app = {
     function onSuccess(position) {
     	mylat = position.coords.latitude;
     	mylon = position.coords.longitude;
+    	alert(mylat);
+    	alert(mylon);
 		nearest_gasstation(position.coords.latitude,position.coords.longitude);
     }
 
@@ -105,6 +108,7 @@ var app = {
     function refresh_info()
     {
     	$('#refresh').empty().append('<a href="#"><i  class="icon-refresh icon-spin icon-large"></i></a>');
+    	alert('refresh info');
 
     	fuel_type = window.localStorage.getItem("fuel_type");
     	fuel_name = window.localStorage.getItem("fuel_name");
@@ -167,6 +171,8 @@ var app = {
 					$('#nearest_gasstation').empty().append(obj.text);
 					destlat = obj.lat;
 					destlon = obj.lon;
+					alert(destlat);
+					alert(destlon);
 					initialize(obj.lat,obj.lon,obj.brand);
 				} // End of success function of ajax form
 			}); // End of ajax call 

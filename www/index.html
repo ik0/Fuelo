@@ -203,21 +203,7 @@
 
 <!-- settings -->
 <div data-role="page" id="settings">
-	<script type="text/javascript">
-        $("#fuelselect").val(fuel_type);
 
-		$('#fuelselect').on('change', function() {
-		  	fuel_type = this.value;
-		   	fuel_name = $("#fuelselect option:selected").text();;
-			window.localStorage.setItem("fuel_type", fuel_type);
-			window.localStorage.setItem("fuel_name", fuel_name);
-			get_avg_price();
-			get_diff_price();
-			$('#fuel').empty().append(fuel_name);
-			$.mobile.changePage('#saved', 'pop');
-			//$('#result').empty().append('<i class="icon-ok"></i>Saved');
-		});
-	</script>
     <div data-theme="d" data-role="header" data-position="fixed" data-id="topnav">
         <div class="navbar">
 			<ul class="nav">

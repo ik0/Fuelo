@@ -38,7 +38,7 @@
     	diff_formatted = window.localStorage.getItem("diff_formatted");
     	$('#diff').empty().append(diff_formatted);
 
-        //navigator.geolocation.getCurrentPosition(onSuccess, onError, { maximumAge: 30000, timeout: 15000, enableHighAccuracy: true });
+        navigator.geolocation.getCurrentPosition(onSuccess, onError, { timeout: 15000 });
         
         // Fuelselect 
         $("#fuelselect").val(fuel_type);
@@ -97,7 +97,7 @@
  
     	get_avg_price();
     	get_diff_price();
-    	navigator.geolocation.getCurrentPosition(onSuccess, onError, { maximumAge: 30000, timeout: 15000, enableHighAccuracy: true });
+    	navigator.geolocation.getCurrentPosition(onSuccess, onError, { timeout: 15000);
     }
     
     function refresh_gasstations()

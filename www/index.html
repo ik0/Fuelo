@@ -208,6 +208,70 @@
    </div>
 </div>	<!-- end prices -->
 
+<!-- gasstation -->
+<div data-role="page" id="gasstation">
+    <div data-theme="d" data-role="header" data-position="fixed" data-id="topnav">
+        <div class="navbar">
+			<ul class="nav">
+				<li><a class="brand" href="index.html" style="padding:8px 15px 10px 30px;"> <img src="img/logo-72x24.gif" alt="Fuelo"/></a></li>
+			</ul>
+			<ul class="nav pull-right">
+				<li id="refresh_gasstation" onclick="refresh_gasstation();"><a href="#"><i class="icon-refresh icon-large"></i></a></li>
+				<li><a href="#settings" data-transition="slide"><i class="icon-reorder icon-large"></i></a></li>
+			</ul>
+		</div>
+    </div>
+    
+    <div data-role="content">
+    <div id="googleMapGasstation" style="width:100%;height:150px;"></div>
+    
+    <h4 ><span id="logo"></span> <span id="brand_name"></span> <span id="gasstation_name"></span></h4>
+	<address>
+		<span id="city"></span><br>
+		<span id="address"></span><br>
+		<i class="icon-phone" title="телефон"></i> <span id="phone"></span><br>
+		<i class="icon-time" title="работно време"></i> <span id="worktime"></span><br>
+		<i class="icon-money" title="начини за плащане"></i> <span id="payments"></span><br>
+		<i class="icon-star-empty" title="други услуги"></i> <span id="services"></span>
+	</address>
+	
+	<div class="ui-grid-a">
+		<div class="ui-block-a" id="gasstation_location">
+			<a href="geo:" data-role="button" class="ui-disabled"><i class="icon-map-marker"></i> Google Maps</a>
+		</div>
+		<div class="ui-block-b" id="gasstation_phone">
+			<a href="tel:" data-role="button" class="ui-disabled"><i class="icon-phone"></i> Обаждане</a>
+		</div>
+    </div>
+	
+    </div>
+    
+    <div data-theme="d" data-role="footer" data-position="fixed" data-id="bottomnav">
+		<div data-role="navbar">
+            <ul>
+                <li>
+                    <a href="#index" data-transition="fade" data-theme="">
+                        <i class="icon-location-arrow icon-large"></i>
+                        <br /><small>Начало</small>
+                    </a>
+                </li>
+                <li>
+                    <a href="#gasstations" data-transition="fade" data-theme="">
+                    	<i class="icon-fire icon-large"></i>
+                        <br /><small>Наблизо</small>
+                    </a>
+                </li>
+                <li>
+                    <a href="#prices" data-transition="fade" data-theme="">
+                    	<i class="icon-money icon-large"></i>
+                        <br /><small>Цени</small>
+                    </a>
+                </li>
+            </ul>
+        </div>
+   </div>
+</div>	<!-- end gasstation -->
+
 <!-- settings -->
 <div data-role="page" id="settings">
 

@@ -42,6 +42,8 @@ var app = {
 	var avg_price = '0,00';
 	var diff_formatted = '+0,00';
 	
+	var id;
+	
 	var mylat;
 	var mylon;
 	var destlat;
@@ -81,6 +83,10 @@ var app = {
 		
 		$('#gasstations').on('pageshow',function(event, ui){
 			refresh_gasstations();
+		});
+		
+		$('#gasstation').on('pageshow',function(event, ui){
+			refresh_gasstation();
 		});
         
         // Refresh data
@@ -411,3 +417,68 @@ function calcRoute() {
 				} // End of success function of ajax form
 			}); // End of ajax call 
 	}
+
+	function setid(i)
+	{
+		id = i;
+	}
+
+    function refresh_gasstation()
+    {
+    	//var id = $(document).getUrlParam("id");
+    	$('#refresh_gasstation').empty().append('<a href="#"><i  class="icon-refresh icon-spin icon-large"></i></a>');
+    	$.ajax({
+			url: 'http://fuelo.net/api/get_gasstation',
+			type:'POST',
+			dataType: 'text',
+			data: { id:id },
+			success: function(data){
+				var obj = jQuery.parseJSON(data);
+					$('#brand_name').empty().append(obj.brand_name);
+					$('#gasstation_name').empty().append(obj.gasstation_name);
+					$('#logo').empty().append('<img src="http://fuelo.net/img/logos/' + obj.logo + '-small.png" /\>');
+					$('#city').empty().append(obj.city);
+					$('#address').empty().append(obj.address);
+					$('#services').empty().append(obj.services);
+					$('#payments').empty().append(obj.payments);
+					$('#phone').empty().append(obj.phone);
+					$('#worktime').empty().append(obj.worktime);
+					
+					$('#gasstation_location').empty().append('<a href="geo:'+obj.lat+','+obj.lon+'" data-role="button"><i class="icon-map-marker"></i> Google Maps</a>');
+					$('#gasstation_phone').empty().append('<a href="tel:'+obj.phone+'" data-role="button"><i class="icon-phone"></i> Обаждане</a>');
+					
+					initialize_gasstation_map(obj.lat,obj.lon,obj.logo);
+					
+				} // End of success function of ajax form
+			}); // End of ajax call 
+	  
+    }
+
+function initialize_gasstation_map(latitude,longitude,brand)
+{
+	directionsDisplay = new google.maps.DirectionsRenderer();
+	var mapProp = {
+	  center:new google.maps.LatLng(latitude,longitude),
+	  zoom:15,
+	  disableDefaultUI: true,
+	  mapTypeId:google.maps.MapTypeId.ROADMAP
+	  };
+	map=new google.maps.Map(document.getElementById("googleMapGasstation"),mapProp);
+	directionsDisplay.setMap(map);
+	directionsDisplay.setPanel(document.getElementById("directionsPanel"));
+
+	var marker=new google.maps.Marker({
+	  position:new google.maps.LatLng(latitude,longitude),
+	  icon:'http://fuelo.net/img/logos/'+brand+'-small.png',
+	  map: map,
+	  title: "Gasstation"
+	  });
+	  
+  	var visitor=new google.maps.Marker({
+	  position:new google.maps.LatLng(mylat,mylon),
+	  map: map,
+	  title: "Вие се намирате тук"
+	  });
+	  
+	  $('#refresh_gasstation').empty().append('<a href="#"><i class="icon-refresh icon-large"></i></a>');
+}

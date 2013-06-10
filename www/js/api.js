@@ -150,6 +150,14 @@ var app = {
     function refresh_prices()
     {
     	$('#refresh_prices').empty().append('<a href="#"><i  class="icon-refresh icon-spin icon-large"></i></a>');
+    	
+    	// get avg prices from local store
+    	$('#gasolineprice').empty().append(window.localStorage.getItem("avg_price_gasoline"));
+    	$('#dieselprice').empty().append(window.localStorage.getItem("avg_price_diesel"));
+    	$('#lpgprice').empty().append(window.localStorage.getItem("avg_price_lpg"));
+    	$('#methaneprice').empty().append(window.localStorage.getItem("avg_price_methane"));
+    	
+    	// Real refresh
     	get_avg_price_gasoline();
     	get_avg_price_diesel();
     	get_avg_price_lpg();
@@ -163,21 +171,25 @@ var app = {
     
 	function nearest_gasstation(latitude,longitude)
 	{
-		// Get near gasstations by ajax
-		$.ajax({
-			url: 'http://fuelo.net/api/get_recommended_gasstation',
-			type:'POST',
-			dataType: 'text',
-			data: { lat:latitude,lon:longitude,fuel:fuel_type },
-			success: function(data){
-				var obj = jQuery.parseJSON(data);
-					$('#nearest_gasstation').empty().append(obj.text);
-					destlat = obj.lat;
-					destlon = obj.lon;
-					initialize(obj.lat,obj.lon,obj.brand);
-				} // End of success function of ajax form
-			}); // End of ajax call 
-
+		var request = $.ajax({
+		  url: "http://fuelo.net/api/get_recommended_gasstation",
+		  type: "POST",
+		  data: {lat:latitude,lon:longitude,fuel:fuel_type},
+		  dataType: "html",
+		  timeout: 5000
+		});
+		 
+		request.done(function(data) {
+		  	var obj = jQuery.parseJSON(data);
+			$('#nearest_gasstation').empty().append(obj.text);
+			destlat = obj.lat;
+			destlon = obj.lon;
+			initialize(obj.lat,obj.lon,obj.brand);
+		});
+		 
+		request.fail(function(jqXHR, textStatus) {
+		  alert( "<h3>Няма връзка със сървъра</h3><h5>" + textStatus + '</h5>');
+		});
 	}
 
 function initialize(latitude,longitude,brand)
@@ -519,3 +531,4 @@ function initialize_gasstations_map()
 	  
 	  $('#refresh_gasstations').empty().append('<a href="#"><i class="icon-refresh icon-large"></i></a>');
 }
+

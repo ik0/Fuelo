@@ -58,20 +58,7 @@ var app = {
 
         //navigator.geolocation.getCurrentPosition(onSuccess, onError, { maximumAge: 30000, timeout: 15000, enableHighAccuracy: true });
         
-        // Fuelselect 
-        $("#fuelselect").val(fuel_type);
 
-		$('#fuelselect').on('change', function() {
-		  	fuel_type = this.value;
-		   	fuel_name = $("#fuelselect option:selected").text();;
-			window.localStorage.setItem("fuel_type", fuel_type);
-			window.localStorage.setItem("fuel_name", fuel_name);
-			get_avg_price();
-			get_diff_price();
-			$('#fuel').empty().append(fuel_name);
-			$.mobile.changePage('#saved', 'pop');
-			//$('#result').empty().append('<i class="icon-ok"></i>Saved');
-		});
 		
 		// Events
 		$('#index').on('pageshow',function(event, ui){
@@ -88,6 +75,10 @@ var app = {
 		
 		$('#gasstation').on('pageshow',function(event, ui){
 			refresh_gasstation();
+		});
+		
+		$('#settings').on('pageshow',function(event, ui){
+			refresh_settings();
 		});
         
         // Refresh data
@@ -168,7 +159,26 @@ var app = {
     	get_prices_lpg();
     	get_prices_methane();
     }
-    
+
+	function refresh_settings()
+    {
+        // Fuelselect 
+        $("#fuelselect").val(fuel_type);
+        $('#fuelselect').selectmenu('refresh');
+
+		$('#fuelselect').on('change', function() {
+		  	fuel_type = this.value;
+		   	fuel_name = $("#fuelselect option:selected").text();;
+			window.localStorage.setItem("fuel_type", fuel_type);
+			window.localStorage.setItem("fuel_name", fuel_name);
+			get_avg_price();
+			get_diff_price();
+			$('#fuel').empty().append(fuel_name);
+			$.mobile.changePage('#saved', 'pop');
+			//$('#result').empty().append('<i class="icon-ok"></i>Saved');
+		});
+    }
+
 	function nearest_gasstation(latitude,longitude)
 	{
 		var request = $.ajax({
@@ -176,7 +186,7 @@ var app = {
 		  type: "POST",
 		  data: {lat:latitude,lon:longitude,fuel:fuel_type},
 		  dataType: "html",
-		  timeout: 5000
+		  timeout: 15000
 		});
 		 
 		request.done(function(data) {

@@ -171,11 +171,8 @@ var app = {
 		   	fuel_name = $("#fuelselect option:selected").text();;
 			window.localStorage.setItem("fuel_type", fuel_type);
 			window.localStorage.setItem("fuel_name", fuel_name);
-			get_avg_price();
-			get_diff_price();
-			$('#fuel').empty().append(fuel_name);
+
 			$.mobile.changePage('#saved', 'pop');
-			//$('#result').empty().append('<i class="icon-ok"></i>Saved');
 		});
     }
 
@@ -198,7 +195,7 @@ var app = {
 		});
 		 
 		request.fail(function(jqXHR, textStatus) {
-		  alert( "<h3>Няма връзка със сървъра</h3><h5>" + textStatus + '</h5>');
+		  alert( "Няма връзка със сървъра. Моля опитайте по-късно.");
 		});
 	}
 
@@ -246,20 +243,25 @@ function calcRoute() {
   });
 }
 
+// Get avg price by fuel type
 	function get_avg_price()
 	{
-		// Get near gasstations by ajax
-		$.ajax({
-			url: 'http://fuelo.net/api/get_avg_price',
-			type:'POST',
-			dataType: 'text',
-			data: { fuel:fuel_type },
-			success: function(data){
-				var obj = jQuery.parseJSON(data);
-					$('#avg_price').empty().append(obj.avg_price);
-					window.localStorage.setItem("avg_price", obj.avg_price);
-				} // End of success function of ajax form
-			}); // End of ajax call 
+		var request = $.ajax({
+		  url: "http://fuelo.net/api/get_avg_price",
+		  type: "POST",
+		  data: {fuel:fuel_type},
+		  dataType: "json",
+		  timeout: 15000
+		});
+		 
+		request.done(function(obj) {
+			$('#avg_price').empty().append(obj.avg_price);
+			window.localStorage.setItem("avg_price", obj.avg_price);
+		});
+		 
+		request.fail(function(jqXHR, textStatus) {
+		  alert( "Няма връзка със сървъра. Моля опитайте по-късно.");
+		});
 	}
 	
 	function get_diff_price()
@@ -347,28 +349,28 @@ function calcRoute() {
 	{
 		initialize_gasstations_map();
 		// Get near gasstations by ajax
-		$.ajax({
-			url: 'http://fuelo.net/api/get_recommended_gasstations',
-			type:'POST',
-			dataType: 'text',
-			data: { lat:mylat,lon:mylon,fuel:fuel_type },
-			success: function(data){
-				var obj = jQuery.parseJSON(data);
-					$('#gasstations_list').empty().append(obj.list);
-					$('#gasstations_list').listview('refresh');
-					$('#refreshgasstations').empty().append('<a href="#"><i  class="icon-refresh icon-large"></i></a>');
-					ob = jQuery.parseJSON(obj.coords);
-					//alert (ob);
-					//len = ob.length;
-					//alert (len);
-					for (var i = 0; i < ob.length; i++) {
-						var a = ob[i];
-						//alert(a.lat);
-						addMarker(a.lat,a.lon,a.logo) 
-					}
-
-				} // End of success function of ajax form
-			}); // End of ajax call 
+		var request = $.ajax({
+		  url: "http://fuelo.net/api/get_recommended_gasstations",
+		  type: "POST",
+		  data: {lat:mylat,lon:mylon,fuel:fuel_type},
+		  dataType: "json",
+		  timeout: 15000
+		});
+		 
+		request.done(function(obj) {
+			$('#gasstations_list').empty().append(obj.list);
+			$('#gasstations_list').listview('refresh');
+			$('#refreshgasstations').empty().append('<a href="#"><i  class="icon-refresh icon-large"></i></a>');
+			ob = jQuery.parseJSON(obj.coords);
+			for (var i = 0; i < ob.length; i++) {
+				var a = ob[i];
+				addMarker(a.lat,a.lon,a.logo) 
+			}
+		});
+		 
+		request.fail(function(jqXHR, textStatus) {
+		  alert( "Няма връзка със сървъра. Моля опитайте по-късно.");
+		});
 	}
 	
 	function get_prices_gasoline()
@@ -478,8 +480,9 @@ function calcRoute() {
 					$('#phone').empty().append(obj.phone);
 					$('#worktime').empty().append(obj.worktime);
 					
-					$('#gasstation_location').empty().append('<a href="geo:'+obj.lat+','+obj.lon+'" data-role="button"><i class="icon-map-marker"></i> Google Maps</a>');
+					$('#gasstation_location').empty().append('<a href="geo:'+obj.lat+','+obj.lon+'" data-role="button"><i class="icon-map-marker"></i> GoogleMaps</a>');
 					$('#gasstation_phone').empty().append('<a href="tel:'+obj.phone+'" data-role="button"><i class="icon-phone"></i> Обаждане</a>');
+					$("#buttons_grid").trigger("create");
 					
 					initialize_gasstation_map(obj.lat,obj.lon,obj.logo);
 					

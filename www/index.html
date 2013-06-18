@@ -101,8 +101,6 @@
 
 <!-- gasstations -->
 <div data-role="page" id="gasstations">
-	<div id="googleMapGasstations" style="width:100%;height:150px;"></div>
-	<br />
     <div data-theme="c" data-role="header" data-position="fixed" data-id="topnav">
         <div class="navbar">
 			<ul class="nav">
@@ -123,9 +121,13 @@
     </div>
     
     <div data-role="content">
+    	<div id="googleMapGasstations" style="width:100%;height:150px;"></div>
+		<br />
 		<ul data-role="listview" id="gasstations_list">
 			<li><i class="icon-spinner icon-spin icon-large"></i> Моля изчакайте</h5></li>
 		</ul>
+		<br />
+		<a href="#bigmap" data-role="button"  data-transition="slide" data-icon="arrow-r" data-iconpos="right">На карта</a>
     </div>
     
     <div data-theme="c" data-role="footer" data-position="fixed" data-id="bottomnav">
@@ -363,6 +365,58 @@
 		<p><a href="#settings" data-rel="back" data-transition="pop" data-role="button">OK</a></p>
 	</div>
 </div>	<!-- end saved popup -->
+
+<!-- big map -->
+<div data-role="page" id="bigmap">
+    <div data-theme="c" data-role="header" data-position="fixed" data-id="topnav">
+        <div class="navbar">
+			<ul class="nav">
+				<li><a class="brand" href="#index" style="padding:8px 15px 10px 30px;"> <img src="img/logo-72x24.gif" alt="Fuelo"/></a></li>
+			</ul>
+			<ul class="nav pull-right">
+				<li id="refresh_bigmap" onclick="refresh_bigmap();"><a href="#"><i class="icon-refresh icon-large"></i></a></li>
+				<li class="dropdown">
+                	<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-ellipsis-vertical icon-large"></i></a>
+                    <ul class="dropdown-menu nav-items">
+                        <li><a href="#settings" data-transition="slide" style="color: #777;"><i class="icon-wrench"></i> Настройки</a></li>
+                        <li class="divider"></li>
+                        <li><a href="" onclick="navigator.app.exitApp()" style="color: #777;"><i class="icon-off"></i> Изход</a></li>
+                    </ul>
+				<li>
+			</ul>
+		</div>
+    </div>
+    
+    <div data-role="content">
+		<div id="googleBigMap" style="width:100%;"></div>
+    </div>
+    
+    <div data-theme="c" data-role="footer" data-position="fixed" data-id="bottomnav">
+		<div data-role="navbar">
+            <ul>
+                <li>
+                    <a href="#index" data-transition="slide reverse" data-theme="c">
+                        <i class="icon-location-arrow icon-large"></i>
+                        <br /><small>Начало</small>
+                    </a>
+                </li>
+                <li>
+                    <a href="#gasstations" data-transition="fade" data-theme="c">
+                    	<i class="icon-fire icon-large"></i>
+                        <br /><small>Наблизо</small>
+                    </a>
+                </li>
+                <li>
+                    <a href="#prices" data-transition="fade" data-theme="c">
+                    	<i class="icon-usd icon-large"></i>
+                        <br /><small>Цени</small>
+                    </a>
+                </li>
+            </ul>
+        </div>
+   </div>
+</div>	<!-- end bigmap -->
+
 
 </body>
 </html>

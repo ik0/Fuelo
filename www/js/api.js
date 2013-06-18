@@ -2,9 +2,15 @@
     //
     document.addEventListener("deviceready", onDeviceReady, false);
     
+    // Bug in Android 3+
+    Ext.Loader.setConfig({disableCaching:false});
+	Ext.Ajax.setDisableCaching(false);
+	
 var app = {
+
     // Application Constructor
     initialize: function() {
+
         this.bindEvents();
     },
     // Bind Event Listeners
@@ -57,8 +63,6 @@ var app = {
     	directionsService = new google.maps.DirectionsService();
 
         //navigator.geolocation.getCurrentPosition(onSuccess, onError, { maximumAge: 30000, timeout: 15000, enableHighAccuracy: true });
-        
-
 		
 		// Events
 		$('#index').on('pageshow',function(event, ui){
@@ -80,6 +84,12 @@ var app = {
 		$('#settings').on('pageshow',function(event, ui){
 			refresh_settings();
 		});
+		
+		$('#bigmap').on('pageshow',function(event, ui){
+			//$('#googleBigMap').height($(window).height() - (10 + $('#topnav').height() + $('#bottomnav').height()));
+			$('#googleBigMap').height($(window).height() - 140);
+			refresh_bigmap();
+		});
         
         // Refresh data
         refresh_info()
@@ -91,6 +101,8 @@ var app = {
     function onSuccess(position) {
     	mylat = position.coords.latitude;
     	mylon = position.coords.longitude;
+    	window.localStorage.setItem("mylat", mylat);
+    	window.localStorage.setItem("mylon", mylon);
 		nearest_gasstation(position.coords.latitude,position.coords.longitude);
     }
 
@@ -136,6 +148,52 @@ var app = {
     	get_gasstattions();
     	$('#gasstations_list').listview();
     	
+    }
+    
+    function refresh_bigmap()
+    {
+    	$('#refresh_bigmap').empty().append('<a href="#"><i  class="icon-refresh icon-spin icon-large"></i></a>');
+    	//$('#googleBigMap').height($(window).height() - (10 + $('#topnav').height() - $('#bottomnav').height()));
+    	var mapProp = {
+		  center:new google.maps.LatLng(mylat,mylon),
+		  zoom:12,
+		  mapTypeId:google.maps.MapTypeId.ROADMAP
+		};
+		  
+		var bigmap = new google.maps.Map(document.getElementById("googleBigMap"),mapProp);
+		  
+	  	var visitor=new google.maps.Marker({
+		  position:new google.maps.LatLng(mylat,mylon),
+		  map: bigmap,
+		  title: "Вие се намирате тук"
+		  });
+		var request = $.ajax({
+			  url: "http://fuelo.net/api/get_near_gasstations",
+			  type: "POST",
+			  data: {lat:mylat,lon:mylon,fuel:fuel_type},
+			  dataType: "json",
+			  timeout: 15000
+			});
+			 
+		request.done(function(data) {
+			obj = jQuery.parseJSON(data.stations);
+			for (var i = 0; i < obj.length; i++) {
+				var a = obj[i];
+
+			    marker = new google.maps.Marker({
+					position: new google.maps.LatLng(a.lat, a.lon),
+					icon:'http://fuelo.net/img/logos/'+a.logo+'-small.png',
+					map: bigmap
+				});
+			}
+			$('#refresh_bigmap').empty().append('<a href="#"><i class="icon-refresh icon-large"></i></a>');
+		});
+		 
+		request.fail(function(jqXHR, textStatus) {
+		  alert( "Няма връзка със сървъра. Моля опитайте по-късно.");
+		  $('#refresh_bigmap').empty().append('<a href="#"><i class="icon-refresh icon-large"></i></a>');
+		});
+	
     }
 
     function refresh_prices()
@@ -545,3 +603,8 @@ function initialize_gasstations_map()
 	  $('#refresh_gasstations').empty().append('<a href="#"><i class="icon-refresh icon-large"></i></a>');
 }
 
+function get_gasstattions_on_map()
+{
+
+	  
+}

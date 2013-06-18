@@ -2,9 +2,7 @@
     //
     document.addEventListener("deviceready", onDeviceReady, false);
     
-    // Bug in Android 3+
-    Ext.Loader.setConfig({disableCaching:false});
-	Ext.Ajax.setDisableCaching(false);
+
 	
 var app = {
 
@@ -206,7 +204,7 @@ var app = {
 				}); 
 
 				google.maps.event.addListener(marker, 'click', function() {
-						infowindow.setContent('<a href="#gasstation" onclick="setid('+a.id+');">a.brand + ' ' + a.name + '</a>');
+						infowindow.setContent('<a href="#gasstation" onclick="setid('+a.id+');">' + a.brand + ' ' + a.name + '</a>');
 						infowindow.open(bigmap,marker);
 				});
 			}

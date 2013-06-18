@@ -161,7 +161,8 @@ var app = {
 		};
 		  
 		var bigmap = new google.maps.Map(document.getElementById("googleBigMap"),mapProp);
-		  
+		
+				
 	  	var visitor=new google.maps.Marker({
 		  position:new google.maps.LatLng(mylat,mylon),
 		  map: bigmap,
@@ -176,14 +177,37 @@ var app = {
 			});
 			 
 		request.done(function(data) {
+			var infowindow = new google.maps.InfoWindow({});
+			var shadow = new google.maps.MarkerImage('img/shadow_price.png',
+				 new google.maps.Size(40, 56),
+				 null,
+				 new google.maps.Point(20, 55)
+			);
 			obj = jQuery.parseJSON(data.stations);
 			for (var i = 0; i < obj.length; i++) {
 				var a = obj[i];
 
-			    marker = new google.maps.Marker({
-					position: new google.maps.LatLng(a.lat, a.lon),
-					icon:'http://fuelo.net/img/logos/'+a.logo+'-small.png',
-					map: bigmap
+				var image = {
+					  url: 'http://fuelo.net/img/logos/'+a.logo+'-small.png',
+					  size: new google.maps.Size(30, 25),
+					  origin: new google.maps.Point(0, 0),
+					  anchor: new google.maps.Point(15, 36)
+				};
+
+				marker = new MarkerWithLabel({
+					   position: new google.maps.LatLng(a.lat,a.lon),
+					   map: bigmap,
+					   icon: image,
+				 	   shadow: shadow,
+					   labelContent: a.price + 'лв',
+					   labelAnchor: new google.maps.Point(20, 55),
+					   labelClass: "labels", // the CSS class for the label
+					   labelStyle: {}
+				}); 
+
+				google.maps.event.addListener(marker, 'click', function() {
+						infowindow.setContent(a.brand + ' ' + a.name);
+						infowindow.open(bigmap,marker);
 				});
 			}
 			$('#refresh_bigmap').empty().append('<a href="#"><i class="icon-refresh icon-large"></i></a>');
@@ -257,49 +281,49 @@ var app = {
 		});
 	}
 
-function initialize(latitude,longitude,brand)
-{
-	directionsDisplay = new google.maps.DirectionsRenderer();
-	var mapProp = {
-	  center:new google.maps.LatLng(latitude,longitude),
-	  zoom:15,
-	  mapTypeId:google.maps.MapTypeId.ROADMAP
+	function initialize(latitude,longitude,brand)
+	{
+		directionsDisplay = new google.maps.DirectionsRenderer();
+		var mapProp = {
+		  center:new google.maps.LatLng(latitude,longitude),
+		  zoom:15,
+		  mapTypeId:google.maps.MapTypeId.ROADMAP
+		  };
+		map=new google.maps.Map(document.getElementById("googleMap"),mapProp);
+		directionsDisplay.setMap(map);
+		directionsDisplay.setPanel(document.getElementById("directionsPanel"));
+
+		var marker=new google.maps.Marker({
+		  position:new google.maps.LatLng(latitude,longitude),
+		  icon:'http://fuelo.net/img/logos/'+brand+'-small.png',
+		  map: map,
+		  title: "Gasstation"
+		  });
+		  
+	  	var visitor=new google.maps.Marker({
+		  position:new google.maps.LatLng(mylat,mylon),
+		  map: map,
+		  title: "Вие се намирате тук"
+		  });
+		  
+		  $('#refresh').empty().append('<a href="#"><i  class="icon-refresh icon-large"></i></a>');
+	}
+
+	function calcRoute() {
+	  var start = new google.maps.LatLng(mylat,mylon);
+	  var end = new google.maps.LatLng(destlat,destlon);
+	  var request = {
+		origin:start,
+		destination:end,
+		travelMode: google.maps.TravelMode.DRIVING
 	  };
-	map=new google.maps.Map(document.getElementById("googleMap"),mapProp);
-	directionsDisplay.setMap(map);
-	directionsDisplay.setPanel(document.getElementById("directionsPanel"));
-
-	var marker=new google.maps.Marker({
-	  position:new google.maps.LatLng(latitude,longitude),
-	  icon:'http://fuelo.net/img/logos/'+brand+'-small.png',
-	  map: map,
-	  title: "Gasstation"
+	  directionsService.route(request, function(result, status) {
+		if (status == google.maps.DirectionsStatus.OK) {
+			$('#directionsPanel').empty()
+		  	directionsDisplay.setDirections(result);
+		} else { alert ('Error getting directions: ' + status); } 
 	  });
-	  
-  	var visitor=new google.maps.Marker({
-	  position:new google.maps.LatLng(mylat,mylon),
-	  map: map,
-	  title: "Вие се намирате тук"
-	  });
-	  
-	  $('#refresh').empty().append('<a href="#"><i  class="icon-refresh icon-large"></i></a>');
-}
-
-function calcRoute() {
-  var start = new google.maps.LatLng(mylat,mylon);
-  var end = new google.maps.LatLng(destlat,destlon);
-  var request = {
-    origin:start,
-    destination:end,
-    travelMode: google.maps.TravelMode.DRIVING
-  };
-  directionsService.route(request, function(result, status) {
-    if (status == google.maps.DirectionsStatus.OK) {
-    	$('#directionsPanel').empty()
-      	directionsDisplay.setDirections(result);
-    } else { alert ('Error getting directions: ' + status); } 
-  });
-}
+	}
 
 // Get avg price by fuel type
 	function get_avg_price()
@@ -538,8 +562,8 @@ function calcRoute() {
 					$('#phone').empty().append(obj.phone);
 					$('#worktime').empty().append(obj.worktime);
 					
-					$('#gasstation_location').empty().append('<a href="geo:'+obj.lat+','+obj.lon+'" data-role="button"><i class="icon-map-marker"></i> GoogleMaps</a>');
-					$('#gasstation_phone').empty().append('<a href="tel:'+obj.phone+'" data-role="button"><i class="icon-phone"></i> Обаждане</a>');
+					$('#gasstation_location').empty().append('<a href="geo:'+obj.lat+','+obj.lon+'" data-role="button" data-mini="true"><i class="icon-map-marker"></i> Google Maps</a>');
+					$('#gasstation_phone').empty().append('<a href="tel:'+obj.phone+'" data-role="button" data-mini="true"><i class="icon-phone"></i> Обаждане</a>');
 					$("#buttons_grid").trigger("create");
 					
 					initialize_gasstation_map(obj.lat,obj.lon,obj.logo);

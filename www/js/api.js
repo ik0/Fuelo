@@ -194,7 +194,7 @@ var app = {
 					  anchor: new google.maps.Point(15, 36)
 				};
 
-				marker = new MarkerWithLabel({
+				var marker = new MarkerWithLabel({
 					   position: new google.maps.LatLng(a.lat,a.lon),
 					   map: bigmap,
 					   icon: image,
@@ -206,7 +206,7 @@ var app = {
 				}); 
 
 				google.maps.event.addListener(marker, 'click', function() {
-						infowindow.setContent(a.brand + ' ' + a.name);
+						infowindow.setContent('<a href="#gasstation" onclick="setid('+a.id+');">a.brand + ' ' + a.name + '</a>');
 						infowindow.open(bigmap,marker);
 				});
 			}

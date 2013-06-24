@@ -1,14 +1,22 @@
-// Wait for Cordova to load
-    //
-    document.addEventListener("deviceready", onDeviceReady, false);
-    
-
+    var directionsDisplay;
+    var directionsService
+	var map;
+	var mapgastations;
+	var fuel_type = 'gasoline';
+	var fuel_name = 'Бензин А95';
+	var avg_price = '0,00';
+	var diff_formatted = '+0,00';
+	
+	var id;
+	
+	var mylat;
+	var mylon;
+	var destlat;
+	var destlon;
 	
 var app = {
-
     // Application Constructor
     initialize: function() {
-
         this.bindEvents();
     },
     // Bind Event Listeners
@@ -38,27 +46,11 @@ var app = {
     }
 };
 
-    var directionsDisplay;
-    var directionsService
-	var map;
-	var mapgastations;
-	var fuel_type = 'gasoline';
-	var fuel_name = 'Бензин А95';
-	var avg_price = '0,00';
-	var diff_formatted = '+0,00';
-	
-	var id;
-	
-	var mylat;
-	var mylon;
-	var destlat;
-	var destlon;
-
     // Cordova is ready
     //
     function onDeviceReady() {
 
-    	directionsService = new google.maps.DirectionsService();
+    	
 
         //navigator.geolocation.getCurrentPosition(onSuccess, onError, { maximumAge: 30000, timeout: 15000, enableHighAccuracy: true });
 		
@@ -281,6 +273,7 @@ var app = {
 
 	function initialize(latitude,longitude,brand)
 	{
+		directionsService = new google.maps.DirectionsService();
 		directionsDisplay = new google.maps.DirectionsRenderer();
 		var mapProp = {
 		  center:new google.maps.LatLng(latitude,longitude),
@@ -625,8 +618,3 @@ function initialize_gasstations_map()
 	  $('#refresh_gasstations').empty().append('<a href="#"><i class="icon-refresh icon-large"></i></a>');
 }
 
-function get_gasstattions_on_map()
-{
-
-	  
-}

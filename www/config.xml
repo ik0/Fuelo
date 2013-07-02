@@ -95,8 +95,12 @@
         Otherwise, you can specify specific domains:
     -->
     <access origin="http://fuelo.net" subdomains="true" /> <!-- allow local pages -->
+    <access origin="http://google.com" subdomains="true" /> <!-- allow google -->
     <access origin="http://googleapis.com" subdomains="true" /> <!-- allow google -->
     <access origin="http://gstatic.com" subdomains="true" /> <!-- allow google -->
+    <access origin="https://google.com" subdomains="true" /> <!-- allow google -->
+    <access origin="https://googleapis.com" subdomains="true" /> <!-- allow google -->
+    <access origin="https://gstatic.com" subdomains="true" /> <!-- allow google -->
     <!--
         <access origin="http://phonegap.com" />                    - allow any secure requests to http://phonegap.com/
         <access origin="http://phonegap.com" subdomains="true" />  - same as above, but including subdomains, such as http://build.phonegap.com/

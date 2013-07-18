@@ -13,45 +13,6 @@
 	var mylon;
 	var destlat;
 	var destlon;
-	
-
-    // Cordova is ready
-    //
-    function onDeviceReady() {
-		//alert("ready!");
-        //navigator.geolocation.getCurrentPosition(onSuccess, onError, { maximumAge: 30000, timeout: 15000, enableHighAccuracy: true });
-		
-		// Events
-		$('#index').on('pageshow',function(event, ui){
-			refresh_info();
-		});
-		
-		$('#prices').on('pageshow',function(event, ui){
-			refresh_prices();
-		});
-		
-		$('#gasstations').on('pageshow',function(event, ui){
-			refresh_gasstations();
-		});
-		
-		$('#gasstation').on('pageshow',function(event, ui){
-			refresh_gasstation();
-		});
-		
-		$('#settings').on('pageshow',function(event, ui){
-			refresh_settings();
-		});
-		
-		$('#bigmap').on('pageshow',function(event, ui){
-			//$('#googleBigMap').height($(window).height() - (10 + $('#topnav').height() + $('#bottomnav').height()));
-			$('#googleBigMap').height($(window).height() - 140);
-			refresh_bigmap();
-		});
-        
-        // Refresh data
-        refresh_info()
-        
-    }
 
     // onSuccess Geolocation
     //

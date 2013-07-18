@@ -36,12 +36,12 @@
 </style>
     <script type="text/javascript">
         //app.initialize();
-    $(document).ready(function() {
+    function onBodyLoad(){	
         document.addEventListener("deviceready", onDeviceReady, false);
-    });
+    }
     </script>
 </head>
-<body>
+<body onload="onBodyLoad()">
 	
 <div data-role="page" id="index">
     <div data-theme="c" data-role="header" data-position="fixed" data-id="topnav">

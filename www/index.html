@@ -38,43 +38,43 @@
         //app.initialize();
     function onBodyLoad(){	
         document.addEventListener("deviceready", onDeviceReady, false);
-    }
-    // Cordova is ready
-    //
-    function onDeviceReady() {
-		//alert("ready!");
-        //navigator.geolocation.getCurrentPosition(onSuccess, onError, { maximumAge: 30000, timeout: 15000, enableHighAccuracy: true });
+    
+		// Cordova is ready
+		//
+		function onDeviceReady() {
+			//alert("ready!");
+		    //navigator.geolocation.getCurrentPosition(onSuccess, onError, { maximumAge: 30000, timeout: 15000, enableHighAccuracy: true });
 		
-		// Events
-		$('#index').on('pageshow',function(event, ui){
-			refresh_info();
-		});
+			// Events
+			$('#index').on('pageshow',function(event, ui){
+				refresh_info();
+			});
 		
-		$('#prices').on('pageshow',function(event, ui){
-			refresh_prices();
-		});
+			$('#prices').on('pageshow',function(event, ui){
+				refresh_prices();
+			});
 		
-		$('#gasstations').on('pageshow',function(event, ui){
-			refresh_gasstations();
-		});
+			$('#gasstations').on('pageshow',function(event, ui){
+				refresh_gasstations();
+			});
 		
-		$('#gasstation').on('pageshow',function(event, ui){
-			refresh_gasstation();
-		});
+			$('#gasstation').on('pageshow',function(event, ui){
+				refresh_gasstation();
+			});
 		
-		$('#settings').on('pageshow',function(event, ui){
-			refresh_settings();
-		});
+			$('#settings').on('pageshow',function(event, ui){
+				refresh_settings();
+			});
 		
-		$('#bigmap').on('pageshow',function(event, ui){
-			//$('#googleBigMap').height($(window).height() - (10 + $('#topnav').height() + $('#bottomnav').height()));
-			$('#googleBigMap').height($(window).height() - 140);
-			refresh_bigmap();
-		});
-        
-        // Refresh data
-        refresh_info()
-        
+			$('#bigmap').on('pageshow',function(event, ui){
+				//$('#googleBigMap').height($(window).height() - (10 + $('#topnav').height() + $('#bottomnav').height()));
+				$('#googleBigMap').height($(window).height() - 140);
+				refresh_bigmap();
+			});
+		    
+		    // Refresh data
+		    refresh_info()
+		}
     }
     </script>
 </head>
@@ -117,7 +117,7 @@
 	
 		<p> </p>
 		<div id='nearest_gasstation'></div>
-		<div id="googleMap" style="width:100%;height:180px;text-align:center;"><h5><i class="icon-spinner icon-spin icon-large"></i> Търсене на местоположението</h5></div>
+		<div id="googleMap" style="width:100%;height:180px;text-align:center;"><i class="icon-spinner icon-spin icon-large"></i><h5> Търсене на местоположението</h5></div>
 	
 		<div data-role="collapsible-set">
 			<div data-role="collapsible" data-collapsed="true">

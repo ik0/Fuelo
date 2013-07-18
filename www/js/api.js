@@ -221,16 +221,16 @@
 		  url: "http://fuelo.net/api/get_recommended_gasstation",
 		  type: "POST",
 		  data: {lat:latitude,lon:longitude,fuel:fuel_type},
-		  dataType: "html",
+		  dataType: "json",
 		  timeout: 15000
 		});
 		 
 		request.done(function(data) {
-		  	var obj = jQuery.parseJSON(data);
-			$('#nearest_gasstation').empty().append(obj.text);
-			destlat = obj.lat;
-			destlon = obj.lon;
-			initialize(obj.lat,obj.lon,obj.brand);
+		  	//var obj = jQuery.parseJSON(data);
+			$('#nearest_gasstation').empty().append(data.text);
+			destlat = data.lat;
+			destlon = data.lon;
+			initialize(data.lat,data.lon,data.brand);
 		});
 		 
 		request.fail(function(jqXHR, textStatus) {

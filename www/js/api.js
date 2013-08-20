@@ -112,22 +112,18 @@
 				var a = obj[i];
 
 				var image = {
-					  url: 'http://fuelo.net/img/logos/'+a.logo+'-small.png',
-					  size: new google.maps.Size(30, 25),
-					  origin: new google.maps.Point(0, 0),
-					  anchor: new google.maps.Point(15, 36)
+					  url: 'http://fuelo.net/img/logos/'+a.logo+'-shadow.png',
+					  size: new google.maps.Size(34, 40),
+	                  origin: new google.maps.Point(0, 0),
+	                  anchor: new google.maps.Point(17, 38)
 				};
 				
-				var marker = new MarkerWithLabel({
-					   position: new google.maps.LatLng(a.lat,a.lon),
-					   map: bigmap,
-					   icon: image,
-				 	   shadow: shadow,
-					   labelContent: a.price + 'лв',
-					   html: '<a href="#gasstation" onclick="setid('+a.id+');">' + a.brand + ' ' + a.name + '</a>',
-					   labelAnchor: new google.maps.Point(20, 55),
-					   labelClass: "labels", // the CSS class for the label
-					   labelStyle: {}
+				var marker = new google.maps.Marker({
+					position: new google.maps.LatLng(a.lat,a.lon),
+					map: bigmap,
+					icon: image,
+					html: '<a href="#gasstation" onclick="setid('+a.id+');">' + a.brand + ' ' + a.name + '</a><br />'+a.price+'лв.',
+                    title: a.brand + ' ' + a.name
 				});
 
 				google.maps.event.addListener(marker, 'click', function() {
@@ -221,7 +217,7 @@
 
 		var marker=new google.maps.Marker({
 		  position:new google.maps.LatLng(latitude,longitude),
-		  icon:'http://fuelo.net/img/logos/'+brand+'-small.png',
+		  icon:'http://fuelo.net/img/logos/'+brand+'-shadow.png',
 		  map: map,
 		  title: "Gasstation"
 		  });
@@ -527,9 +523,15 @@
 // Function for adding a marker to the page.
     function addMarker(lat,lon,logo)
     {
+        var image = {
+	      url: 'http://fuelo.net/img/logos/'+logo+'-shadow.png',
+	      size: new google.maps.Size(34, 40),
+	      origin: new google.maps.Point(0, 0),
+	      anchor: new google.maps.Point(17, 38)
+	    };
         marker = new google.maps.Marker({
             position: new google.maps.LatLng(lat, lon),
-            icon:'http://fuelo.net/img/logos/'+logo+'-small.png',
+            icon: image,
             map: mapgasstations
         });
     }

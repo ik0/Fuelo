@@ -28,6 +28,12 @@
     //
     function onError(error) {
         alert('Не може да открием Вашето местоположение\n' + 'Моля проверете настройките на телефона Ви\n' + error.message + '\n');
+        // Sofia
+        mylat = 42.6985;
+		mylon = 23.3212;
+		window.localStorage.setItem("mylat", mylat);
+    	window.localStorage.setItem("mylon", mylon);
+		nearest_gasstation(mylat,mylon);
     }
 
     function refresh_info()

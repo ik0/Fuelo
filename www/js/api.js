@@ -122,7 +122,7 @@
 					position: new google.maps.LatLng(a.lat,a.lon),
 					map: bigmap,
 					icon: image,
-					html: '<a href="#gasstation" onclick="setid('+a.id+');">' + a.brand + ' ' + a.name + '</a><br /><img src="http://fuelo.net/img/fuels/default/'+fuel_type+".png" /> "+a.price+'лв.',
+					html: '<a href="#gasstation" onclick="setid('+a.id+');">' + a.brand + ' ' + a.name + '</a><br /><img src="http://fuelo.net/img/fuels/default/'+fuel_type+'.png" /> '+a.price+'лв.',
                     title: a.brand + ' ' + a.name
 				});
 

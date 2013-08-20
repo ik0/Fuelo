@@ -4,7 +4,7 @@
 <widget xmlns     = "http://www.w3.org/ns/widgets"
         xmlns:gap = "http://phonegap.com/ns/1.0"
         id        = "net.fuelo.mobile"
-        version   = "1.1"
+        version   = "1.1.1"
         licenseKey="MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAoqG9aljP6m/7HeoIYgZE6HkVHqaGtZND3ew6MwjRpHDWj4C97hDAnV5Km6i/Sz8AeGeaiXRar0hgL2SwSww0v7Au2947XQgp/k5W29t7HtWE5vjIHvd5/xA2XVSI2JmWqGEesTIw/QiFV2FInBPUOZJAT1dLVhiRBDiXeTolnAH41QArcmrSWi3oIGRHO0UuTrebnb0h+lgX22/WluRC1VIip+FFh6D1+YA2yxWXy02hrDS8kpQSPFuoya6TSMeZaevhEKPxu1NBPBsllO133WWec9T05pC0aCEFaRFzVpByg2gm4QwpQFGNZLidNDzX9OZDxtzKAkBaFpiKSceiIQIDAQAB"
         >
 

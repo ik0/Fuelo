@@ -117,21 +117,22 @@
 					  origin: new google.maps.Point(0, 0),
 					  anchor: new google.maps.Point(15, 36)
 				};
-
+				
 				var marker = new MarkerWithLabel({
 					   position: new google.maps.LatLng(a.lat,a.lon),
 					   map: bigmap,
 					   icon: image,
 				 	   shadow: shadow,
 					   labelContent: a.price + 'лв',
+					   html: '<a href="#gasstation" onclick="setid('+a.id+');">' + a.brand + ' ' + a.name + '</a>',
 					   labelAnchor: new google.maps.Point(20, 55),
 					   labelClass: "labels", // the CSS class for the label
 					   labelStyle: {}
-				}); 
+				});
 
 				google.maps.event.addListener(marker, 'click', function() {
-						infowindow.setContent('<a href="#gasstation" onclick="setid('+a.id+');">' + a.brand + ' ' + a.name + '</a>');
-						infowindow.open(bigmap,marker);
+						infowindow.setContent(this.html);
+						infowindow.open(bigmap,this);
 				});
 			}
 			$('#refresh_bigmap').empty().append('<a href="#"><i class="icon-refresh icon-large"></i></a>');

@@ -122,7 +122,7 @@
 					position: new google.maps.LatLng(a.lat,a.lon),
 					map: bigmap,
 					icon: image,
-					html: '<a href="#gasstation" onclick="setid('+a.id+');">' + a.brand + ' ' + a.name + '</a><br />'+a.price+'лв.',
+					html: '<a href="#gasstation" onclick="setid('+a.id+');">' + a.brand + ' ' + a.name + '</a><br /><img src="http://fuelo.net/img/fuels/default/'+fuel_type+".png" /> "+a.price+'лв.',
                     title: a.brand + ' ' + a.name
 				});
 
@@ -503,21 +503,28 @@
 		  mapTypeId:google.maps.MapTypeId.ROADMAP
 		  };
 		var mapgastation =new google.maps.Map(document.getElementById("googleMapGasstation"),mapProp);
+		
+		var image = {
+	      url: 'http://fuelo.net/img/logos/'+brand+'-shadow.png',
+	      size: new google.maps.Size(34, 40),
+	      origin: new google.maps.Point(0, 0),
+	      anchor: new google.maps.Point(17, 38)
+	    };
 
 		var marker=new google.maps.Marker({
 		  position:new google.maps.LatLng(latitude,longitude),
-		  icon:'http://fuelo.net/img/logos/'+brand+'-small.png',
+		  icon: image,
 		  map: mapgastation,
 		  title: "Gasstation"
-		  });
+		});
 		  
 	  	var visitor=new google.maps.Marker({
 		  position:new google.maps.LatLng(mylat,mylon),
 		  map: mapgastation,
 		  title: "Вие се намирате тук"
-		  });
+		});
 		  
-		  $('#refresh_gasstation').empty().append('<a href="#"><i class="icon-refresh icon-large"></i></a>');
+		$('#refresh_gasstation').empty().append('<a href="#"><i class="icon-refresh icon-large"></i></a>');
 	}
 
 // Function for adding a marker to the page.

@@ -13,6 +13,8 @@
 	var mylon;
 	var destlat;
 	var destlon;
+	
+	var pushNotification;
 
     // onSuccess Geolocation
     //

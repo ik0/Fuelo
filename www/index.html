@@ -23,10 +23,11 @@
 	
     <link rel="stylesheet" type="text/css" href="css/fuelo.css" />
     <script type="text/javascript">
+    
         //app.initialize();
     function onBodyLoad(){	
         document.addEventListener("deviceready", onDeviceReady, false);
-        var pushNotification;
+        
     
 		// Cordova is ready
 		//
@@ -62,6 +63,7 @@
 			});
 			
 			// Push notifications
+			
 			pushNotification = window.plugins.pushNotification;
 		    pushNotification.register(
             successHandler,

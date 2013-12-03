@@ -26,6 +26,7 @@
         //app.initialize();
     function onBodyLoad(){	
         document.addEventListener("deviceready", onDeviceReady, false);
+        var pushNotification;
     
 		// Cordova is ready
 		//
@@ -59,6 +60,15 @@
 				$('#googleBigMap').height($(window).height() - 140);
 				refresh_bigmap();
 			});
+			
+			// Push notifications
+			pushNotification = window.plugins.pushNotification;
+		    pushNotification.register(
+            successHandler,
+            errorHandler, {
+                "senderID":"527129936243",
+                "ecb":"onNotificationGCM"
+            });
 		    
 		    // Refresh data
 		    refresh_info()

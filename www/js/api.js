@@ -580,7 +580,7 @@ function onNotificationGCM(e) {
                     url: "http://dev1.fuelo.net/android/register",
                     type: "POST",
                     dataType: "text",
-                    data: { reference: regid, fuel: fuel_type },
+                    data: { regid: e.regid, fuel: fuel_type },
                     timeout: 5000
 		        });
             }

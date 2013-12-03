@@ -7,8 +7,9 @@
     
     <title>Fuelo</title>
     <script type="text/javascript" src="cordova.js"></script>
-    
     <script src="js/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="PushNotification.js"></script>
+    
 	<link href="css/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 	<!-- <link href="css/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">  -->
 	<script src="css/bootstrap/js/bootstrap.min.js"></script>
@@ -62,15 +63,23 @@
 				refresh_bigmap();
 			});
 			
-			// Push notifications
-			
-			pushNotification = window.plugins.pushNotification;
-		    pushNotification.register(
-            successHandler,
-            errorHandler, {
-                "senderID":"527129936243",
-                "ecb":"onNotificationGCM"
-            });
+			try 
+            {
+			    // Push notifications
+			    pushNotification = window.plugins.pushNotification;
+		        pushNotification.register(
+                successHandler,
+                errorHandler, {
+                    "senderID":"527129936243",
+                    "ecb":"onNotificationGCM"
+                });
+            }
+            catch(err) 
+            { 
+                    txt="There was an error on this page.\n\n"; 
+                    txt+="Error description: " + err.message + "\n\n"; 
+                    alert(txt); 
+            } 
 		    
 		    // Refresh data
 		    refresh_info()

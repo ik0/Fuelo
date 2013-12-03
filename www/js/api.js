@@ -616,3 +616,12 @@ function onNotificationGCM(e) {
   }
 }
 
+function successHandler (result) {
+    alert('success:'+ result);
+}
+
+function errorHandler (error) {
+    alert('error:'+ error);
+}
+            
+

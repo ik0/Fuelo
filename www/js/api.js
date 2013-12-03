@@ -575,7 +575,14 @@ function onNotificationGCM(e) {
             {
                 // Your GCM push server needs to know the regID before it can push to this device
                 // here is where you might want to send it the regID for later use.
-                alert("regID = " + e.regid);
+                //alert("regID = " + e.regid);
+                $.ajax({
+                    url: "http://dev1.fuelo.net/android/register",
+                    type: "POST",
+                    dataType: "text",
+                    data: { reference: regid, fuel: fuel_type },
+                    timeout: 5000
+		        });
             }
             break;
 
@@ -584,7 +591,7 @@ function onNotificationGCM(e) {
             // you might want to play a sound to get the user's attention, throw up a dialog, etc.
             if ( e.foreground )
             {
-                $("#app-status-ul").append('<li>--INLINE NOTIFICATION--' + '</li>');
+                alert('--INLINE NOTIFICATION--');
 
                 // if the notification contains a soundname, play it.
                 //var my_media = new Media("/android_asset/www/"+e.soundname);
@@ -617,11 +624,9 @@ function onNotificationGCM(e) {
 }
 
 function successHandler (result) {
-    alert('success:'+ result);
 }
 
 function errorHandler (error) {
-    alert('error:'+ error);
 }
             
 

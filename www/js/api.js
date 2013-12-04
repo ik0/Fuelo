@@ -15,6 +15,7 @@
 	var destlon;
 	
 	var pushNotification;
+	var gcm_id;
 
     // onSuccess Geolocation
     //
@@ -87,28 +88,23 @@
 		};
 		  
 		var bigmap = new google.maps.Map(document.getElementById("googleBigMap"),mapProp);
-		
-				
+			
 	  	var visitor=new google.maps.Marker({
-		  position:new google.maps.LatLng(mylat,mylon),
-		  map: bigmap,
-		  title: "Вие се намирате тук"
-		  });
+            position:new google.maps.LatLng(mylat,mylon),
+            map: bigmap,
+            title: "Вие се намирате тук"
+        });
 		var request = $.ajax({
 			  url: "http://fuelo.net/api/get_near_gasstations",
 			  type: "POST",
 			  data: {lat:mylat,lon:mylon,fuel:fuel_type},
 			  dataType: "json",
 			  timeout: 15000
-			});
+        });
 			 
 		request.done(function(data) {
 			var infowindow = new google.maps.InfoWindow({});
-			var shadow = new google.maps.MarkerImage('img/shadow_price.png',
-				 new google.maps.Size(40, 56),
-				 null,
-				 new google.maps.Point(20, 55)
-			);
+
 			obj = jQuery.parseJSON(data.stations);
 			for (var i = 0; i < obj.length; i++) {
 				var a = obj[i];
@@ -135,12 +131,11 @@
 			}
 			$('#refresh_bigmap').empty().append('<a href="#"><i class="icon-refresh icon-large"></i></a>');
 		});
-		 
+
 		request.fail(function(jqXHR, textStatus) {
-		  alert( "Няма връзка със сървъра. Моля опитайте по-късно.");
-		  $('#refresh_bigmap').empty().append('<a href="#"><i class="icon-refresh icon-large"></i></a>');
+            alert( "Няма връзка със сървъра. Моля опитайте по-късно.");
+            $('#refresh_bigmap').empty().append('<a href="#"><i class="icon-refresh icon-large"></i></a>');
 		});
-	
     }
 
     function refresh_prices()
@@ -566,7 +561,7 @@ function initialize_gasstations_map()
 
 // Push notification
 function onNotificationGCM(e) {
-    alert('EVENT -> RECEIVED:' + e.event);
+    //alert('EVENT -> RECEIVED:' + e.event);
 
     switch( e.event )
     {
@@ -575,14 +570,14 @@ function onNotificationGCM(e) {
             {
                 // Your GCM push server needs to know the regID before it can push to this device
                 // here is where you might want to send it the regID for later use.
-                //alert("regID = " + e.regid);
                 $.ajax({
-                    url: "http://dev1.fuelo.net/android/register",
+                    url: "http://fuelo.net/android/register",
                     type: "POST",
                     dataType: "text",
                     data: { regid: e.regid, fuel: fuel_type },
                     timeout: 5000
 		        });
+		        gcm_id = e.regid;
             }
             break;
 
@@ -591,7 +586,7 @@ function onNotificationGCM(e) {
             // you might want to play a sound to get the user's attention, throw up a dialog, etc.
             if ( e.foreground )
             {
-                alert('--INLINE NOTIFICATION--');
+                //alert('--INLINE NOTIFICATION--');
 
                 // if the notification contains a soundname, play it.
                 //var my_media = new Media("/android_asset/www/"+e.soundname);
@@ -601,24 +596,21 @@ function onNotificationGCM(e) {
             {  // otherwise we were launched because the user touched a notification in the notification tray.
                 if ( e.coldstart )
                 {
-                    alert('--COLDSTART NOTIFICATION--');
+
                 }
                 else
                 {
-                    alert('--BACKGROUND NOTIFICATION--');
+                    //alert('--BACKGROUND NOTIFICATION--');
                 }
             }
 
-            alert('MESSAGE -> MSG: ' + e.payload.message);
-            alert('MESSAGE -> MSGCNT: ' + e.payload.msgcnt);
+            //alert('MESSAGE -> MSG: ' + e.payload.message);
             break;
 
         case 'error':
-            alert('PUSH ERROR -> MSG:' + e.msg);
             break;
 
         default:
-            alert('PUSH EVENT -> Unknown, an event was received and we do not know what it is');
             break;
   }
 }

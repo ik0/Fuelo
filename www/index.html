@@ -29,13 +29,27 @@
     function onBodyLoad(){	
         document.addEventListener("deviceready", onDeviceReady, false);
         
-    
 		// Cordova is ready
 		//
 		function onDeviceReady() {
 			//alert("ready!");
 		    //navigator.geolocation.getCurrentPosition(onSuccess, onError, { maximumAge: 30000, timeout: 15000, enableHighAccuracy: true });
-		
+		    try 
+            {
+			    // Push notifications
+			    pushNotification = window.plugins.pushNotification;
+		        pushNotification.register(
+                successHandler,
+                errorHandler, {
+                    "senderID":"527129936243",
+                    "ecb":"onNotificationGCM"
+                });
+            }
+            catch(err) 
+            { 
+                    // TODO: send report
+            } 
+            
 			// Events
 			$('#index').on('pageshow',function(event, ui){
 				refresh_info();
@@ -62,25 +76,7 @@
 				$('#googleBigMap').height($(window).height() - 140);
 				refresh_bigmap();
 			});
-			
-			try 
-            {
-			    // Push notifications
-			    pushNotification = window.plugins.pushNotification;
-		        pushNotification.register(
-                successHandler,
-                errorHandler, {
-                    "senderID":"527129936243",
-                    "ecb":"onNotificationGCM"
-                });
-            }
-            catch(err) 
-            { 
-                    txt="There was an error on this page.\n\n"; 
-                    txt+="Error description: " + err.message + "\n\n"; 
-                    alert(txt); 
-            } 
-		    
+
 		    // Refresh data
 		    refresh_info()
 		}

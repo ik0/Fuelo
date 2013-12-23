@@ -545,7 +545,7 @@
 					$('#phone').empty().append(obj.phone);
 					$('#worktime').empty().append(obj.worktime);
 					
-					$('#gasstation_location').empty().append('<a href="https://www.google.com/maps/?daddr='+obj.lat+','+obj.lon+'('+obj.brand_name+' '+obj.gasstation_name+')" data-role="button" data-mini="true"><i class="icon-map-marker"></i> Google Maps</a>');
+					$('#gasstation_location').empty().append('<a href="maps.google.com/maps/?daddr='+obj.lat+','+obj.lon+'('+obj.brand_name+' '+obj.gasstation_name+')" data-role="button" data-mini="true"><i class="icon-map-marker"></i> Google Maps</a>');
 					$('#gasstation_phone').empty().append('<a href="tel:'+obj.phone+'" data-role="button" data-mini="true"><i class="icon-phone"></i> Обаждане</a>');
 					$("#buttons_grid").trigger("create");
 					

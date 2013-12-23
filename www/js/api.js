@@ -6,6 +6,7 @@
 	var fuel_name = 'Бензин А95';
 	var avg_price = '0,00';
 	var diff_formatted = '+0,00';
+	var favbrands = new Array();
 	
 	var id;
 	
@@ -16,6 +17,8 @@
 	
 	var pushNotification;
 	var gcm_id;
+	
+	var apikey = '69d4801f4b490c1';
 
     // onSuccess Geolocation
     //
@@ -43,14 +46,17 @@
     {
     	$('#refresh').empty().append('<a href="#"><i  class="icon-refresh icon-spin icon-large"></i></a>');
 
-    	fuel_type = window.localStorage.getItem("fuel_type");
-    	fuel_name = window.localStorage.getItem("fuel_name");
+    	
     	
     	if (fuel_type == null) {
 			fuel_type = 'gasoline';
 			fuel_name = 'Бензин А95';
 			window.localStorage.setItem("fuel_type", "gasoline");
 			window.localStorage.setItem("fuel_name", "Бензин А95");
+		}
+		
+		if (favbrands == null) {
+		    favbrands = [];
 		}
 
     	avg_price = window.localStorage.getItem("avg_price");
@@ -165,16 +171,63 @@
         // Fuelselect 
         $("#fuelselect").val(fuel_type);
         $('#fuelselect').selectmenu('refresh');
+        
+        favbrands = window.localStorage.getItem("favbrands");
+        
+        get_brands();
 
-		$('#fuelselect').on('change', function() {
-		  	fuel_type = this.value;
-		   	fuel_name = $("#fuelselect option:selected").text();;
+		$('#savesettings').click(function() {
+		    
+		    favbrands = [];
+		    $("input[name=favbrands]:checked").each(function () {
+		        favbrands.push($(this).val());
+            });
+            //alert(favbrands);
+		  	fuel_type = $("#fuelselect option:selected").val();
+		   	fuel_name = $("#fuelselect option:selected").text();
 			window.localStorage.setItem("fuel_type", fuel_type);
 			window.localStorage.setItem("fuel_name", fuel_name);
+			window.localStorage.setItem("favbrands", favbrands);
 
 			$.mobile.changePage('#saved', 'pop');
 		});
     }
+
+    function refresh_news()
+    {
+    	$('#refresh_news').empty().append('<a href="#"><i  class="icon-refresh icon-spin icon-large"></i></a>');
+    	// Get news by API
+	    var request = $.ajax({
+            url: "http://fuelo.net/api/news?key=" + apikey,
+            type: "GET",
+            dataType: "json",
+            timeout: 6000
+	    });
+	     
+	    request.done(function(data) {
+	        $('#newsFeed').empty();
+	        $('#newsFeed').append('<ul id="listview1" data-role="listview">');
+	        
+	        obj = data.news;
+		    for (var i = 0; i < obj.length; i++) {
+		        var v = obj[i];
+	            $('#newsFeed').append('<li data-role="list-divider">'+v.date+'</li>');
+	            $('#newsFeed').append('<li><div style="white-space : normal;">'+v.text+'</div></li>');
+            }
+
+            $('#newsFeed').append('</ul>');
+		    $('#newsFeed').listview();
+		    
+		    // Stop spinner
+		    $('#refresh_news').empty().append('<a href="#"><i class="icon-refresh icon-large"></i></a>');
+	    });
+	     
+	    request.fail(function(jqXHR, textStatus) {
+            alert( "Няма връзка със сървъра. Моля опитайте по-късно.");
+            $('#refresh_news').empty().append('<a href="#"><i class="icon-refresh icon-large"></i></a>');
+	    });
+    }
+    
 
 	function nearest_gasstation(latitude,longitude)
 	{
@@ -387,7 +440,7 @@
 					$('#gasoline_prices').empty().append(obj.list);
 					if (fuel_type == 'gasoline')
 					{
-						$('#gasoline').trigger('expand');
+						$('#gasoline').collapsible('expand');
 					}
 					//$('#prices_list').collapsible-set('refresh');
 				} // End of success function of ajax form
@@ -407,7 +460,7 @@
 					$('#diesel_prices').empty().append(obj.list);
 					if (fuel_type == 'diesel')
 					{
-						$('#diesel').trigger('expand');
+						$('#diesel').collapsible('expand');
 					}
 					//$('#prices_list').collapsible-set('refresh');
 				} // End of success function of ajax form
@@ -427,7 +480,7 @@
 					$('#lpg_prices').empty().append(obj.list);
 					if (fuel_type == 'lpg')
 					{
-						$('#lpg').trigger('expand');
+						$('#lpg').collapsible('expand');
 					}
 					//$('#prices_list').collapsible-set('refresh');
 				} // End of success function of ajax form
@@ -447,10 +500,10 @@
 					$('#methane_prices').empty().append(obj.list);
 					if (fuel_type == 'methane')
 					{
-						$('#methane').trigger('expand');
+						$('#methane').collapsible('expand');
 					}
 					//$('#prices_list').collapsible-set('refresh');
-					$('#refresh_prices').empty().append('<a href="#"><i  class="icon-refresh icon-large"></i></a>');
+					$('#refresh_prices').empty().append('<a href="#"><i class="icon-refresh icon-large"></i></a>');
 				} // End of success function of ajax form
 			}); // End of ajax call 
 	}
@@ -574,7 +627,7 @@ function onNotificationGCM(e) {
                     url: "http://fuelo.net/android/register",
                     type: "POST",
                     dataType: "text",
-                    data: { regid: e.regid, fuel: fuel_type },
+                    data: { regid: e.regid, fuel: fuel_type, favbrands: favbrands, lat: mylat, lon: mylon },
                     timeout: 5000
 		        });
 		        gcm_id = e.regid;
@@ -596,11 +649,12 @@ function onNotificationGCM(e) {
             {  // otherwise we were launched because the user touched a notification in the notification tray.
                 if ( e.coldstart )
                 {
-
+                    $.mobile.changePage('#news');
                 }
                 else
                 {
                     //alert('--BACKGROUND NOTIFICATION--');
+                    $.mobile.changePage('#news');
                 }
             }
 
@@ -621,4 +675,43 @@ function successHandler (result) {
 function errorHandler (error) {
 }
             
+function get_brands()
+{
 
+	// Get active brands by API
+	var request = $.ajax({
+        url: "http://fuelo.net/api/brands?key=" + apikey,
+        type: "GET",
+        dataType: "json",
+        timeout: 6000
+	});
+	 
+	request.done(function(data) {
+	    //alert(data);
+	    $('#brands_list').empty();
+	    $('#brands_list').append('<div id="brandsCheckboxes" data-role="fieldcontain">');
+	    $('#brands_list').append('<fieldset data-role="controlgroup" data-type="vertical">');
+	    $('#brands_list').append('<legend>Любими вериги</legend>');
+	    
+	    obj = data.brands;
+	    var fav = favbrands.split(",");
+		for (var i = 0; i < obj.length; i++) {
+		    var v = obj[i];
+
+	        $('#brands_list').append('<input id="check'+i+'" name="favbrands" value="'+v.id+'" data-theme="a" type="checkbox">');
+	        if (fav.indexOf(v.id) > -1)
+            {
+                $("#check"+i).attr("checked",true);
+            }
+            $('#brands_list').append('<label for="check'+i+'"><img src="http://fuelo.net/img/logos/'+v.logo+'-small.png" alt="" /> '+v.name+'</label>');
+        }
+        $('#brands_list').append('</fieldset>');
+        $('#brands_list').append('</div>');
+        
+		$('#brands_list').trigger('create');
+	});
+	 
+	request.fail(function(jqXHR, textStatus) {
+        alert( "Няма връзка със сървъра. Моля опитайте по-късно.");
+	});
+}

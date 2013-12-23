@@ -188,6 +188,7 @@
 			window.localStorage.setItem("fuel_type", fuel_type);
 			window.localStorage.setItem("fuel_name", fuel_name);
 			window.localStorage.setItem("favbrands", favbrands);
+			favbrands = window.localStorage.getItem("favbrands");
 			
 			$.ajax({
                 url: "http://fuelo.net/android/register",

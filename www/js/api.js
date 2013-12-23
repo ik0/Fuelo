@@ -188,6 +188,14 @@
 			window.localStorage.setItem("fuel_type", fuel_type);
 			window.localStorage.setItem("fuel_name", fuel_name);
 			window.localStorage.setItem("favbrands", favbrands);
+			
+			$.ajax({
+                url: "http://fuelo.net/android/register",
+                type: "POST",
+                dataType: "text",
+                data: { regid: gcm_id, fuel: fuel_type, favbrands: favbrands, lat: mylat, lon: mylon },
+                timeout: 5000
+	        });
 
 			$.mobile.changePage('#saved', 'pop');
 		});
@@ -232,11 +240,11 @@
 	function nearest_gasstation(latitude,longitude)
 	{
 		var request = $.ajax({
-		  url: "http://fuelo.net/api/get_recommended_gasstation",
-		  type: "POST",
-		  data: {lat:latitude,lon:longitude,fuel:fuel_type},
-		  dataType: "json",
-		  timeout: 15000
+            url: "http://fuelo.net/api/get_recommended_gasstation",
+            type: "POST",
+            data: {lat:latitude, lon:longitude, fuel:fuel_type, favbrands: favbrands},
+            dataType: "json",
+            timeout: 15000
 		});
 		 
 		request.done(function(data) {
@@ -248,7 +256,9 @@
 		});
 		 
 		request.fail(function(jqXHR, textStatus) {
-		  alert( "Няма връзка със сървъра. Моля опитайте по-късно.");
+		    alert("Няма връзка със сървъра. Моля опитайте по-късно.");
+		    $('#nearest_gasstation').empty().append("Няма връзка със сървъра. Моля опитайте по-късно.");
+		    $('#refresh').empty().append('<a href="#"><i  class="icon-refresh icon-large"></i></a>');
 		});
 	}
 
@@ -257,28 +267,28 @@
 		directionsService = new google.maps.DirectionsService();
 		directionsDisplay = new google.maps.DirectionsRenderer();
 		var mapProp = {
-		  center:new google.maps.LatLng(latitude,longitude),
-		  zoom:15,
-		  mapTypeId:google.maps.MapTypeId.ROADMAP
-		  };
+            center:new google.maps.LatLng(latitude,longitude),
+            zoom:15,
+            mapTypeId:google.maps.MapTypeId.ROADMAP
+        };
 		map=new google.maps.Map(document.getElementById("googleMap"),mapProp);
 		directionsDisplay.setMap(map);
 		directionsDisplay.setPanel(document.getElementById("directionsPanel"));
 
 		var marker=new google.maps.Marker({
-		  position:new google.maps.LatLng(latitude,longitude),
-		  icon:'http://fuelo.net/img/logos/'+brand+'-shadow.png',
-		  map: map,
-		  title: "Gasstation"
-		  });
+            position:new google.maps.LatLng(latitude,longitude),
+            icon:'http://fuelo.net/img/logos/'+brand+'-shadow.png',
+            map: map,
+            title: "Gasstation"
+        });
 		  
 	  	var visitor=new google.maps.Marker({
-		  position:new google.maps.LatLng(mylat,mylon),
-		  map: map,
-		  title: "Вие се намирате тук"
-		  });
+            position:new google.maps.LatLng(mylat,mylon),
+            map: map,
+            title: "Вие се намирате тук"
+	    });
 		  
-		  $('#refresh').empty().append('<a href="#"><i  class="icon-refresh icon-large"></i></a>');
+        $('#refresh').empty().append('<a href="#"><i  class="icon-refresh icon-large"></i></a>');
 	}
 
 	function calcRoute() {
@@ -406,7 +416,7 @@
 		var request = $.ajax({
 		  url: "http://fuelo.net/api/get_recommended_gasstations",
 		  type: "POST",
-		  data: {lat:mylat,lon:mylon,fuel:fuel_type},
+		  data: {lat:mylat, lon:mylon, fuel:fuel_type, favbrands: favbrands},
 		  dataType: "json",
 		  timeout: 15000
 		});

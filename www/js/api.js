@@ -7,6 +7,7 @@
 	var avg_price = '0,00';
 	var diff_formatted = '+0,00';
 	var favbrands = new Array();
+	var promocards = new Array();
 	
 	var id;
 	
@@ -46,8 +47,6 @@
     {
     	$('#refresh').empty().append('<a href="#"><i  class="icon-refresh icon-spin icon-large"></i></a>');
 
-    	
-    	
     	if (fuel_type == null) {
 			fuel_type = 'gasoline';
 			fuel_name = 'Бензин А95';
@@ -173,8 +172,10 @@
         $('#fuelselect').selectmenu('refresh');
         
         favbrands = window.localStorage.getItem("favbrands");
+        promocards = window.localStorage.getItem("promocards");
         
         get_brands();
+        get_promotions();
 
 		$('#savesettings').click(function() {
 		    
@@ -182,13 +183,19 @@
 		    $("input[name=favbrands]:checked").each(function () {
 		        favbrands.push($(this).val());
             });
+            promocards = [];
+		    $("input[name=promocards]:checked").each(function () {
+		        promocards.push($(this).val());
+            });
             //alert(favbrands);
 		  	fuel_type = $("#fuelselect option:selected").val();
 		   	fuel_name = $("#fuelselect option:selected").text();
 			window.localStorage.setItem("fuel_type", fuel_type);
 			window.localStorage.setItem("fuel_name", fuel_name);
 			window.localStorage.setItem("favbrands", favbrands);
+			window.localStorage.setItem("promocards", promocards);
 			favbrands = window.localStorage.getItem("favbrands");
+			promocards = window.localStorage.getItem("promocards");
 			
 			$.ajax({
                 url: "http://fuelo.net/android/register",
@@ -243,7 +250,7 @@
 		var request = $.ajax({
             url: "http://fuelo.net/api/get_recommended_gasstation",
             type: "POST",
-            data: {lat:latitude, lon:longitude, fuel:fuel_type, favbrands: favbrands},
+            data: {lat:latitude, lon:longitude, fuel:fuel_type, favbrands: favbrands, promocards: promocards},
             dataType: "json",
             timeout: 15000
 		});
@@ -720,6 +727,48 @@ function get_brands()
         $('#brands_list').append('</div>');
         
 		$('#brands_list').trigger('create');
+	});
+	 
+	request.fail(function(jqXHR, textStatus) {
+        alert( "Няма връзка със сървъра. Моля опитайте по-късно.");
+	});
+}
+
+function get_promotions()
+{
+
+	// Get active card promotions by API
+	var request = $.ajax({
+        url: "http://fuelo.net/api/promotions?key=" + apikey +"&type=card",
+        type: "GET",
+        dataType: "json",
+        timeout: 6000
+	});
+	 
+	request.done(function(data1) {
+	    //alert(data);
+	    $('#promotions_list').empty();
+	    $('#promotions_list').append('<div id="promotionsCheckboxes" data-role="fieldcontain">');
+	    $('#promotions_list').append('<fieldset data-role="controlgroup" data-type="vertical">');
+	    $('#promotions_list').append('<legend>Карти за отстъпка</legend>');
+	    $('#promotions_list').append('<h5>Отбележете картите, които притежавате</h5>');
+	    
+	    promo = data1.promotions;
+	    var mycards = promocards.split(",");
+		for (var i = 0; i < promo.length; i++) {
+		    var p = promo[i];
+
+	        $('#promotions_list').append('<input id="pcheck'+i+'" name="promocards" value="'+p.id+'" data-theme="a" type="checkbox">');
+	        if (mycards.indexOf(p.id) > -1)
+            {
+                $("#pcheck"+i).attr("checked",true);
+            }
+            $('#promotions_list').append('<label for="pcheck'+i+'"><img src="http://fuelo.net/img/promotions/'+p.icon+'-small.png" alt="" /> '+p.name+'</label>');
+        }
+        $('#promotions_list').append('</fieldset>');
+        $('#promotions_list').append('</div>');
+        
+		$('#promotions_list').trigger('create');
 	});
 	 
 	request.fail(function(jqXHR, textStatus) {

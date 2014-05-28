@@ -57,6 +57,10 @@
 		if (favbrands == null) {
 		    favbrands = [];
 		}
+		
+		if (promocards == null) {
+		    promocards = [];
+		}
 
     	avg_price = window.localStorage.getItem("avg_price");
     	$('#avg_price').empty().append(avg_price);

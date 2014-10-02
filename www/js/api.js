@@ -1,5 +1,5 @@
     var directionsDisplay;
-    var directionsService;
+    var directionsService = new google.maps.DirectionsService();
 	var map;
 	var mapgastations;
 	var fuel_type = 'gasoline';
@@ -278,8 +278,8 @@
 	function initialize(latitude,longitude,brand)
 	{
 	    alert('enter initialize');
-		directionsService = new google.maps.DirectionsService();
-		alert('0');
+		//directionsService = new google.maps.DirectionsService();
+		//alert('0');
 		directionsDisplay = new google.maps.DirectionsRenderer();
 		alert('1');
 		var mapProp = {

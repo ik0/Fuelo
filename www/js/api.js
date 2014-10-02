@@ -276,10 +276,8 @@
 
 	function initialize(latitude,longitude,brand)
 	{
-	    alert('enter initialize');
 		directionsService = new google.maps.DirectionsService();
 		directionsDisplay = new google.maps.DirectionsRenderer();
-		alert('1');
 		var mapProp = {
             center:new google.maps.LatLng(latitude,longitude),
             zoom:15,
@@ -303,7 +301,6 @@
 	    });
 		
         $('#refresh').empty().append('<a href="#"><i  class="icon-refresh icon-large"></i></a>');
-        alert('finish');
 	}
 
 	function calcRoute() {

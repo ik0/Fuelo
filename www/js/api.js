@@ -743,7 +743,7 @@ function get_promotions()
 
 	// Get active card promotions by API
 	var request = $.ajax({
-        url: "http://fuelo.net/api/promotions?key=" + apikey +"&type=card",
+        url: "http://fuelo.net/api/promotions?key=" + apikey + '&type=card',
         type: "GET",
         dataType: "json",
         timeout: 6000

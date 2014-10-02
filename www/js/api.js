@@ -254,7 +254,7 @@
 		var request = $.ajax({
             url: "http://fuelo.net/api/get_recommended_gasstation",
             type: "POST",
-            data: {lat:latitude, lon:longitude, fuel:fuel_type, favbrands: favbrands, promocards: promocards},
+            data: {lat:latitude, lon:longitude, fuel:fuel_type, favbrands: favbrands},
             dataType: "json",
             timeout: 15000
 		});

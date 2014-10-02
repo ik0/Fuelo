@@ -254,7 +254,7 @@
 		var request = $.ajax({
             url: "http://fuelo.net/api/get_recommended_gasstation",
             type: "POST",
-            data: {lat:latitude, lon:longitude, fuel:fuel_type, favbrands: favbrands},
+            data: {lat:latitude, lon:longitude, fuel:fuel_type, favbrands: favbrands, promocards: promocards},
             dataType: "json",
             timeout: 15000
 		});
@@ -264,7 +264,6 @@
 			$('#nearest_gasstation').empty().append(data.text);
 			destlat = data.lat;
 			destlon = data.lon;
-			alert('1 '+ data.brand);
 			initialize(data.lat,data.lon,data.brand);
 		});
 		 
@@ -278,21 +277,17 @@
 	function initialize(latitude,longitude,brand)
 	{
 	    alert('enter initialize');
-		//directionsService = new google.maps.DirectionsService();
-		//alert('0');
-		//directionsDisplay = new google.maps.DirectionsRenderer();
+		directionsService = new google.maps.DirectionsService();
+		directionsDisplay = new google.maps.DirectionsRenderer();
 		alert('1');
 		var mapProp = {
             center:new google.maps.LatLng(latitude,longitude),
             zoom:15,
             mapTypeId:google.maps.MapTypeId.ROADMAP
         };
-        alert('2');
 		map=new google.maps.Map(document.getElementById("googleMap"),mapProp);
-		alert('3');
-		//directionsDisplay.setMap(map);
-		alert('4');
-		//directionsDisplay.setPanel(document.getElementById("directionsPanel"));
+		directionsDisplay.setMap(map);
+		directionsDisplay.setPanel(document.getElementById("directionsPanel"));
 
 		var marker=new google.maps.Marker({
             position:new google.maps.LatLng(latitude,longitude),
@@ -307,7 +302,6 @@
             title: "Вие се намирате тук"
 	    });
 		
-		alert('5');
         $('#refresh').empty().append('<a href="#"><i  class="icon-refresh icon-large"></i></a>');
         alert('finish');
 	}
@@ -323,7 +317,7 @@
 	  directionsService.route(request, function(result, status) {
 		if (status == google.maps.DirectionsStatus.OK) {
 			$('#directionsPanel').empty()
-		  	//directionsDisplay.setDirections(result);
+		  	directionsDisplay.setDirections(result);
 		} else { alert ('Error getting directions: ' + status); } 
 	  });
 	}

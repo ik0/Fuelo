@@ -264,6 +264,7 @@
 			$('#nearest_gasstation').empty().append(data.text);
 			destlat = data.lat;
 			destlon = data.lon;
+			alert('1 '+ data.brand);
 			initialize(data.lat,data.lon,data.brand);
 		});
 		 
@@ -276,15 +277,20 @@
 
 	function initialize(latitude,longitude,brand)
 	{
+	    alert('enter initialize');
 		directionsService = new google.maps.DirectionsService();
 		directionsDisplay = new google.maps.DirectionsRenderer();
+		alert('1');
 		var mapProp = {
             center:new google.maps.LatLng(latitude,longitude),
             zoom:15,
             mapTypeId:google.maps.MapTypeId.ROADMAP
         };
+        alert('2');
 		map=new google.maps.Map(document.getElementById("googleMap"),mapProp);
+		alert('3');
 		directionsDisplay.setMap(map);
+		alert('4');
 		directionsDisplay.setPanel(document.getElementById("directionsPanel"));
 
 		var marker=new google.maps.Marker({
@@ -299,8 +305,10 @@
             map: map,
             title: "Вие се намирате тук"
 	    });
-		  
+		
+		alert('5');
         $('#refresh').empty().append('<a href="#"><i  class="icon-refresh icon-large"></i></a>');
+        alert('finish');
 	}
 
 	function calcRoute() {
